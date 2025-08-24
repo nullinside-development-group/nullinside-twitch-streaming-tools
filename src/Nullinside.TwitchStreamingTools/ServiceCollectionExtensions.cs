@@ -40,6 +40,7 @@ public static class ServiceCollectionExtensions {
     collection.AddTransient<TtsPhoneticWordsViewModel>();
     collection.AddTransient<TtsSkipUsernamesViewModel>();
     collection.AddTransient<KeybindViewModel>();
+    collection.AddTransient<AutomationViewModel>();
   }
 
   /// <summary>

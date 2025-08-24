@@ -65,6 +65,7 @@
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.9"/>
         <PackageReference Include="NAudio.Wasapi" Version="2.2.1"/>
         <PackageReference Include="NAudio.WinMM" Version="2.2.1"/>
+        <PackageReference Include="OpenCvSharp4" Version="4.11.0.20250507"/>
         <PackageReference Include="PInvoke.User32" Version="0.7.124"/>
         <PackageReference Include="System.Speech" Version="9.0.9"/>
         <PackageReference Include="Xaml.Behaviors.Avalonia" Version="11.3.6.4"/>
@@ -106,6 +107,10 @@
         </Compile>
         <Compile Update="Views\Pages\SettingsView\SettingsView.axaml.cs">
             <DependentUpon>SettingsView.axaml</DependentUpon>
+            <SubType>Code</SubType>
+        </Compile>
+        <Compile Update="Views\Pages\AutomationView.axaml.cs">
+            <DependentUpon>AutomationView.axaml</DependentUpon>
             <SubType>Code</SubType>
         </Compile>
     </ItemGroup>
