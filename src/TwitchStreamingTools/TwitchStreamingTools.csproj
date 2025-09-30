@@ -63,8 +63,8 @@
         <PackageReference Include="NAudio.WinMM" Version="2.2.1"/>
         <PackageReference Include="PInvoke.User32" Version="0.7.124"/>
         <PackageReference Include="System.Speech" Version="9.0.9" />
-        <PackageReference Include="Xaml.Behaviors.Avalonia" Version="11.3.6.1" />
-        <PackageReference Include="Xaml.Behaviors.Interactivity" Version="11.3.6.1" />
+        <PackageReference Include="Xaml.Behaviors.Avalonia" Version="11.3.6.4" />
+        <PackageReference Include="Xaml.Behaviors.Interactivity" Version="11.3.6.4" />
     </ItemGroup>
 
     <ItemGroup>
