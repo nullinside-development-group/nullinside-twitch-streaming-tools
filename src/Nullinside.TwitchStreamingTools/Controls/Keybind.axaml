@@ -8,13 +8,13 @@
              x:Class="Nullinside.TwitchStreamingTools.Controls.Keybind"
              x:DataType="viewModels:KeybindViewModel">
     <StackPanel>
-        <Button IsVisible="{Binding !Listening}" 
+        <Button IsVisible="{Binding !Listening}"
                 Content="{Binding Keybind, TargetNullValue='[None]'}"
-                Command="{Binding ListenForKeystroke}" 
+                Command="{Binding StartListenKeystrokeCommand}"
                 ToolTip.Tip="ESC to unset" />
         <StackPanel IsVisible="{Binding Listening}"
                     Orientation="Horizontal">
-            <controls:Loading Width="25" 
+            <controls:Loading Width="25"
                               Height="25" />
             <Label>Press a key...</Label>
         </StackPanel>

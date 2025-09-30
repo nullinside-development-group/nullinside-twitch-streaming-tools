@@ -4,13 +4,13 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Timers;
 
+using CommunityToolkit.Mvvm.ComponentModel;
+
 using log4net;
 
 using Nullinside.TwitchStreamingTools.Controls.ViewModels;
 using Nullinside.TwitchStreamingTools.Models;
 using Nullinside.TwitchStreamingTools.Utilities;
-
-using ReactiveUI;
 
 using TwitchLib.Api.Core.Exceptions;
 using TwitchLib.Api.Helix.Models.Chat.GetChatters;
@@ -23,7 +23,7 @@ namespace Nullinside.TwitchStreamingTools.ViewModels.Pages.SettingsView;
 /// <summary>
 ///   Handles managing the list of users to skip in TTS.
 /// </summary>
-public class TtsSkipUsernamesViewModel : ViewModelBase {
+public partial class TtsSkipUsernamesViewModel : ViewModelBase {
   /// <summary>
   ///   The logger.
   /// </summary>
@@ -47,12 +47,12 @@ public class TtsSkipUsernamesViewModel : ViewModelBase {
   /// <summary>
   ///   The view model that handles the two column control.
   /// </summary>
-  private TwoListViewModel _twoListViewModel;
+  [ObservableProperty] private TwoListViewModel _twoListViewModel;
 
   /// <summary>
   ///   The user entered username to add to the skip list.
   /// </summary>
-  private string? _userToAdd;
+  [ObservableProperty] private string? _userToAdd;
 
   /// <summary>
   ///   Initializes a new instance of the <see cref="TtsSkipUsernamesViewModel" /> class.
@@ -78,22 +78,6 @@ public class TtsSkipUsernamesViewModel : ViewModelBase {
 
     TwoListViewModel.RightList.CollectionChanged += TtsSkipped_OnCollectionChanged;
     _userListRefreshTimer.Start();
-  }
-
-  /// <summary>
-  ///   Gets or sets the view model that handles the two column control.
-  /// </summary>
-  public TwoListViewModel TwoListViewModel {
-    get => _twoListViewModel;
-    set => this.RaiseAndSetIfChanged(ref _twoListViewModel, value);
-  }
-
-  /// <summary>
-  ///   Gets or sets the user entered username to add to the skip list.
-  /// </summary>
-  public string? UserToAdd {
-    get => _userToAdd;
-    set => this.RaiseAndSetIfChanged(ref _userToAdd, value);
   }
 
   /// <summary>

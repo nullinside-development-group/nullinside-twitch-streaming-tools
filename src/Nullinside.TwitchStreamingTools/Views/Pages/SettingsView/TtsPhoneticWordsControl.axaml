@@ -30,9 +30,9 @@
             </Grid.ColumnDefinitions>
 
 
-            <Label Grid.Row="0" Grid.Column="0" VerticalAlignment="Center">Word:</Label>
+            <Label Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Right">Word:</Label>
             <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding UserEnteredWord}" />
-            <Label Grid.Row="1" Grid.Column="0" VerticalAlignment="Center">Phonetic:</Label>
+            <Label Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Right">Phonetic:</Label>
             <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding UserEnteredPhonetic}" />
             <StackPanel Grid.Row="2" Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Right"
                         Grid.ColumnSpan="2">

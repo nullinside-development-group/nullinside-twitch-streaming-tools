@@ -3,11 +3,13 @@ using System.Diagnostics;
 using System.IO;
 using System.Net.Http;
 using System.Net.WebSockets;
-using System.Reactive;
 using System.Threading;
 using System.Threading.Tasks;
 
 using Avalonia.Media.Imaging;
+
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 
 using log4net;
 
@@ -19,8 +21,6 @@ using Nullinside.Api.Common.Twitch;
 using Nullinside.TwitchStreamingTools.Services;
 using Nullinside.TwitchStreamingTools.Utilities;
 
-using ReactiveUI;
-
 using TwitchLib.Api.Helix.Models.Users.GetUsers;
 
 namespace Nullinside.TwitchStreamingTools.ViewModels.Pages;
@@ -28,7 +28,7 @@ namespace Nullinside.TwitchStreamingTools.ViewModels.Pages;
 /// <summary>
 ///   Handles binding your account to the application.
 /// </summary>
-public class AccountViewModel : PageViewModelBase, IDisposable {
+public partial class AccountViewModel : PageViewModelBase {
   /// <summary>
   ///   The path to the folder containing cached profile images.
   /// </summary>
@@ -58,27 +58,27 @@ public class AccountViewModel : PageViewModelBase, IDisposable {
   /// <summary>
   ///   True if currently downloading the logged in user's profile photo, false otherwise.
   /// </summary>
-  private bool _downloadingProfileImage;
+  [ObservableProperty] private bool _downloadingProfileImage;
 
   /// <summary>
   ///   True if we have a valid OAuth token, false otherwise.
   /// </summary>
-  private bool _hasValidOAuthToken;
+  [ObservableProperty] private bool _hasValidOAuthToken;
 
   /// <summary>
   ///   True if currently in the logging in process, false otherwise.
   /// </summary>
-  private bool _loggingIn;
+  [ObservableProperty] private bool _loggingIn;
 
   /// <summary>
   ///   The profile image of the logged in user.
   /// </summary>
-  private Bitmap? _profileImage;
+  [ObservableProperty] private Bitmap? _profileImage;
 
   /// <summary>
   ///   The authenticated user's twitch username.
   /// </summary>
-  private string? _twitchUsername;
+  [ObservableProperty] private string? _twitchUsername;
 
   /// <summary>
   ///   Initializes a new instance of the <see cref="AccountViewModel" /> class.
@@ -90,77 +90,19 @@ public class AccountViewModel : PageViewModelBase, IDisposable {
     _twitchAccountService.OnCredentialsStatusChanged += OnCredentialsStatusChanged;
     _twitchAccountService.OnCredentialsChanged += OnCredentialsChanged;
     _configuration = configuration;
-    OnPerformLogin = ReactiveCommand.Create(PerformLogin);
-    OnLogout = ReactiveCommand.Create(ClearCredentials);
 
     // Set the initial state of the ui
     HasValidOAuthToken = _twitchAccountService.CredentialsAreValid;
     TwitchUsername = _twitchAccountService.TwitchUsername;
   }
 
-  /// <summary>
-  ///   The profile image of the logged in user.
-  /// </summary>
-  public Bitmap? ProfileImage {
-    get => _profileImage;
-    set => this.RaiseAndSetIfChanged(ref _profileImage, value);
-  }
-
   /// <inheritdoc />
   public override string IconResourceKey { get; } = "InprivateAccountRegular";
-
-  /// <summary>
-  ///   Called when the user clicks the login button.
-  /// </summary>
-  public ReactiveCommand<Unit, Unit> OnPerformLogin { get; }
-
-  /// <summary>
-  ///   Called when logging out the current user.
-  /// </summary>
-  public ReactiveCommand<Unit, Unit> OnLogout { get; }
-
-  /// <summary>
-  ///   True if currently in the logging in process, false otherwise.
-  /// </summary>
-  public bool LoggingIn {
-    get => _loggingIn;
-    set => this.RaiseAndSetIfChanged(ref _loggingIn, value);
-  }
-
-  /// <summary>
-  ///   True if currently downloading the logged in user's profile photo, false otherwise.
-  /// </summary>
-  public bool DownloadingProfileImage {
-    get => _downloadingProfileImage;
-    set => this.RaiseAndSetIfChanged(ref _downloadingProfileImage, value);
-  }
-
-  /// <summary>
-  ///   True if we have a valid OAuth token, false otherwise.
-  /// </summary>
-  public bool HasValidOAuthToken {
-    get => _hasValidOAuthToken;
-    set => this.RaiseAndSetIfChanged(ref _hasValidOAuthToken, value);
-  }
-
-  /// <summary>
-  ///   The authenticated user's twitch username.
-  /// </summary>
-  public string? TwitchUsername {
-    get => _twitchUsername;
-    set => this.RaiseAndSetIfChanged(ref _twitchUsername, value);
-  }
 
   /// <summary>
   ///   The application version number.
   /// </summary>
   public string? Version => Constants.APP_VERSION;
-
-  /// <inheritdoc />
-  public void Dispose() {
-    OnPerformLogin.Dispose();
-    OnLogout.Dispose();
-  }
 
   /// <summary>
   ///   Loads the profile image when the UI loads.
@@ -240,7 +182,8 @@ public class AccountViewModel : PageViewModelBase, IDisposable {
   /// <summary>
   ///   Launches the computer's default browser to generate an OAuth token.
   /// </summary>
-  private async void PerformLogin() {
+  [RelayCommand]
+  private async Task PerformLogin() {
     LoggingIn = true;
     try {
       CancellationToken token = CancellationToken.None;
@@ -289,6 +232,7 @@ public class AccountViewModel : PageViewModelBase, IDisposable {
   /// <summary>
   ///   Clears the credentials out (logging out).
   /// </summary>
+  [RelayCommand]
   private void ClearCredentials() {
     _twitchAccountService.DeleteCredentials();
   }

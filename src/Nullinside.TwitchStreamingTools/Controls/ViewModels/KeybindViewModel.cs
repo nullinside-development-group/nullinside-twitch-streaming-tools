@@ -1,8 +1,10 @@
 ﻿using System.Reactive;
 
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+
 using Nullinside.TwitchStreamingTools.Models;
 using Nullinside.TwitchStreamingTools.Services;
-using Nullinside.TwitchStreamingTools.ViewModels;
 
 using ReactiveUI;
 
@@ -11,7 +13,7 @@ namespace Nullinside.TwitchStreamingTools.Controls.ViewModels;
 /// <summary>
 ///   Handles storing information required to visualize a keybind.
 /// </summary>
-public class KeybindViewModel : ViewModelBase {
+public partial class KeybindViewModel : ObservableObject {
   /// <summary>
   ///   The listener for keystrokes on the keyboard.
   /// </summary>
@@ -20,12 +22,12 @@ public class KeybindViewModel : ViewModelBase {
   /// <summary>
   ///   The keybind, if set.
   /// </summary>
-  private Keybind? _keybind;
+  [ObservableProperty] private Keybind? _keybind;
 
   /// <summary>
   ///   True if listening for keystrokes, false otherwise.
   /// </summary>
-  private bool _listening;
+  [ObservableProperty] private bool _listening;
 
   /// <summary>
   ///   Initializes a new instance of the <see cref="KeybindViewModel" /> class.
@@ -33,33 +35,12 @@ public class KeybindViewModel : ViewModelBase {
   /// <param name="service">The listener for keystrokes on the keyboard.</param>
   public KeybindViewModel(IGlobalKeyPressService service) {
     _service = service;
-    ListenForKeystroke = ReactiveCommand.Create(StartListenKeystroke);
   }
-
-  /// <summary>
-  ///   The keybind.
-  /// </summary>
-  public Keybind? Keybind {
-    get => _keybind;
-    set => this.RaiseAndSetIfChanged(ref _keybind, value);
-  }
-
-  /// <summary>
-  ///   True if listening for keystrokes, false otherwise.
-  /// </summary>
-  public bool Listening {
-    get => _listening;
-    set => this.RaiseAndSetIfChanged(ref _listening, value);
-  }
-
-  /// <summary>
-  ///   Listens for keystrokes.
-  /// </summary>
-  public ReactiveCommand<Unit, Unit> ListenForKeystroke { get; }
 
   /// <summary>
   ///   Starts listening for keystrokes.
   /// </summary>
+  [RelayCommand]
   private void StartListenKeystroke() {
     Listening = true;
     _service.OnKeystroke -= OnKeystroke;
