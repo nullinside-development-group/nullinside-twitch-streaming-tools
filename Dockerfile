@@ -29,7 +29,7 @@ RUN curl -L \
       -X POST \
       -H "Accept: application/vnd.github+json" \
       -H "Authorization: Bearer $GITHUB_TOKEN" \
-      https://api.github.com/repos/nullinside-development-group/twitch-streaming-tools/releases \
+      https://api.github.com/repos/nullinside-development-group/nullinside-twitch-streaming-tools/releases \
       -d '{"tag_name":"'$TAG_VERSION'","target_commitish":"main","name":"'$TAG_VERSION'","body":"'$DESCRIPTION'","draft":false,"prerelease":false,"generate_release_notes":false}' 
 
 # Upload the files to the release. We need to get the ID for the release we created first and then upload the zips.
@@ -38,7 +38,7 @@ RUN curl -L \
 RUN export RELEASE_ID=$(curl -L \
                           -H "Accept: application/vnd.github+json" \
                           -H "Authorization: Bearer $GITHUB_TOKEN" \
-                          "https://api.github.com/repos/nullinside-development-group/twitch-streaming-tools/releases/latest" \
+                          "https://api.github.com/repos/nullinside-development-group/nullinside-twitch-streaming-tools/releases/latest" \
                           | jq .id) && \
     echo "Release ID: "$RELEASE_ID && \
     curl -L \
@@ -46,5 +46,5 @@ RUN export RELEASE_ID=$(curl -L \
       -H "Accept: application/vnd.github+json" \
       -H "Authorization: Bearer $GITHUB_TOKEN" \
       -H "Content-Type: application/octet-stream" \
-      "https://uploads.github.com/repos/nullinside-development-group/twitch-streaming-tools/releases/$RELEASE_ID/assets?name=twitch-streaming-tools.zip" \
+      "https://uploads.github.com/repos/nullinside-development-group/nullinside-twitch-streaming-tools/releases/$RELEASE_ID/assets?name=twitch-streaming-tools.zip" \
       --data-binary "@/app/publish/twitch-streaming-tools.zip"
