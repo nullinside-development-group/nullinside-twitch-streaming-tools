@@ -45,7 +45,7 @@ public partial class MainWindow : Window {
     // handle the command line arguments for updating the application if applicable.
     string[] args = Environment.GetCommandLineArgs();
     if (args.Contains("--update")) {
-      _ = GitHubUpdateManager.PerformUpdateAndRestart("nullinside-development-group", "twitch-streaming-tools", args[2].Trim('"').Trim(), "twitch-streaming-tools.zip");
+      _ = GitHubUpdateManager.PerformUpdateAndRestart("nullinside-development-group", "nullinside-twitch-streaming-tools", args[2].Trim('"').Trim(), "twitch-streaming-tools.zip");
       return;
     }
 
@@ -56,7 +56,7 @@ public partial class MainWindow : Window {
     // check for a new version of the application.
     Task.Factory.StartNew(async () => {
       GithubLatestReleaseJson? serverVersion =
-        await GitHubUpdateManager.GetLatestVersion("nullinside-development-group", "twitch-streaming-tools").ConfigureAwait(false);
+        await GitHubUpdateManager.GetLatestVersion("nullinside-development-group", "nullinside-twitch-streaming-tools").ConfigureAwait(false);
       if (null == serverVersion || string.IsNullOrWhiteSpace(serverVersion.name)) {
         return;
       }

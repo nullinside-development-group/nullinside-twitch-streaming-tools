@@ -46,7 +46,7 @@ public class NewVersionWindowViewModel : ViewModelBase {
     // asynchronously determine the current version number.
     Task.Factory.StartNew(async () => {
       GithubLatestReleaseJson? version =
-        await GitHubUpdateManager.GetLatestVersion("nullinside-development-group", "twitch-streaming-tools").ConfigureAwait(false);
+        await GitHubUpdateManager.GetLatestVersion("nullinside-development-group", "nullinside-twitch-streaming-tools").ConfigureAwait(false);
 
       if (null == version) {
         return;
