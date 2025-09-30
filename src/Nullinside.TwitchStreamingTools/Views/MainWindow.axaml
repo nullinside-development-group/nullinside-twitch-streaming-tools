@@ -1,0 +1,138 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:controls="clr-namespace:TwitchStreamingTools.Controls"
+        xmlns:viewModels="clr-namespace:Nullinside.TwitchStreamingTools.ViewModels"
+        xmlns:controls1="clr-namespace:Nullinside.TwitchStreamingTools.Controls"
+        xmlns:m="clr-namespace:Nullinside.TwitchStreamingTools.Models"
+        mc:Ignorable="d"
+        d:DesignWidth="475"
+        d:DesignHeight="300"
+        MinWidth="475"
+        MinHeight="300"
+        Width="900"
+        Height="650"
+        CanResize="True"
+        WindowStartupLocation="CenterScreen"
+        x:Class="Nullinside.TwitchStreamingTools.Views.MainWindow"
+        x:DataType="viewModels:MainWindowViewModel"
+        Icon="/Assets/logo.ico"
+        Title="Twitch Streaming Tools">
+    <Window.Styles>
+        <Style Selector="Slider">
+            <Setter Property="FocusAdorner">
+                <FocusAdornerTemplate>
+                    <Rectangle Stroke="rgb(204, 200, 175)" StrokeThickness="2" />
+                </FocusAdornerTemplate>
+            </Setter>
+        </Style>
+        <Style Selector="CheckBox">
+            <Setter Property="FocusAdorner">
+                <FocusAdornerTemplate>
+                    <Rectangle Stroke="rgb(204, 200, 175)" StrokeThickness="2" />
+                </FocusAdornerTemplate>
+            </Setter>
+        </Style>
+        <Style Selector="Label">
+            <Setter Property="Foreground">rgb(204, 200, 175)</Setter>
+        </Style>
+        <Style Selector="TextBox">
+            <Setter Property="Foreground">rgb(204, 200, 175)</Setter>
+            <Setter Property="SelectionBrush">rgb(54, 52, 46)</Setter>
+        </Style>
+        <Style Selector="TextBox:focus">
+            <Setter Property="Foreground">rgb(204, 200, 175)</Setter>
+        </Style>
+        <Style Selector="TextBox:focus /template/ Border#PART_BorderElement">
+            <Setter Property="BorderBrush">rgb(204, 200, 175)</Setter>
+        </Style>
+        <Style Selector="TextBlock">
+            <Setter Property="Foreground">rgb(204, 200, 175)</Setter>
+        </Style>
+        <Style Selector="Button">
+            <Setter Property="Background">#353332</Setter>
+            <Setter Property="Foreground">rgb(204, 200, 175)</Setter>
+            <Setter Property="FocusAdorner">
+                <FocusAdornerTemplate>
+                    <Rectangle Stroke="rgb(204, 200, 175)" StrokeThickness="2" />
+                </FocusAdornerTemplate>
+            </Setter>
+        </Style>
+        <Style Selector="ListBoxItem">
+            <Setter Property="Background">#353332</Setter>
+            <Setter Property="Foreground">rgb(204, 200, 175)</Setter>
+            <Setter Property="FocusAdorner">
+                <FocusAdornerTemplate>
+                    <Rectangle Stroke="rgb(204, 200, 175)" StrokeThickness="2" />
+                </FocusAdornerTemplate>
+            </Setter>
+        </Style>
+        <Style Selector="ListBoxItem:selected /template/ ContentPresenter">
+            <Setter Property="Background">#4F4D4C</Setter>
+            <Setter Property="Foreground">rgb(204, 200, 175)</Setter>
+        </Style>
+        <Style Selector="PathIcon">
+            <Setter Property="Foreground">rgb(204, 200, 175)</Setter>
+            <Setter Property="FocusAdorner">
+                <FocusAdornerTemplate>
+                    <Rectangle Stroke="rgb(204, 200, 175)" StrokeThickness="2" />
+                </FocusAdornerTemplate>
+            </Setter>
+        </Style>
+    </Window.Styles>
+
+    <Design.DataContext>
+        <viewModels:MainWindowViewModel />
+    </Design.DataContext>
+
+    <DockPanel HorizontalAlignment="Stretch"
+               VerticalAlignment="Stretch"
+               Name="ContentWrapper">
+        <!-- The Application is Currently Updating and Not Usable!: This must come first because the final item always fills. -->
+        <DockPanel Background="Transparent" DockPanel.Dock="Top" IsVisible="{Binding IsUpdating}">
+            <StackPanel>
+                <Label HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       FontSize="32"
+                       FontWeight="Bold"
+                       Foreground="rgb(204, 200, 175)"
+                       Padding="0 50 0 0">
+                    Updating
+                </Label>
+                <controls1:Loading Width="100" Height="100" />
+            </StackPanel>
+        </DockPanel>
+        <!-- The normal application: This must come last because the last item always fills. -->
+        <DockPanel Background="Transparent" DockPanel.Dock="Top" IsVisible="{Binding !IsUpdating}">
+            <SplitView IsPaneOpen="{Binding IsMenuOpen}"
+                       CompactPaneLength="55"
+                       OpenPaneLength="150"
+                       DisplayMode="CompactInline"
+                       Background="rgb(26, 24, 23)"
+                       PaneBackground="#211F1E">
+                <SplitView.Pane>
+                    <StackPanel Spacing="5"
+                                Margin="5">
+                        <Button Command="{Binding OnToggleMenu}">
+                            <PathIcon Data="{StaticResource LineHorizontal3Regular}" />
+                        </Button>
+                        <ListBox ItemsSource="{Binding MenuItems}" SelectedItem="{Binding SelectedMenuItem}">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate DataType="{x:Type m:MenuItem}">
+                                    <StackPanel Spacing="15" Orientation="Horizontal" Margin="0">
+                                        <PathIcon Data="{Binding Icon}" Padding="0" />
+                                        <TextBlock Text="{Binding Label}" Padding="0" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </StackPanel>
+                </SplitView.Pane>
+                <SplitView.Content>
+                    <TransitioningContentControl Margin="10" Content="{Binding Page}" />
+                </SplitView.Content>
+            </SplitView>
+        </DockPanel>
+    </DockPanel>
+</Window>
