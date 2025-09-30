@@ -6,7 +6,7 @@ FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
 ARG TAG_VERSION
 WORKDIR /src
-COPY ["src/Nullinside.TwitchStreamingTools/Nullinside.TwitchStreamingTools.csproj", "src/TwitchStreamingTools/"]
+COPY ["src/Nullinside.TwitchStreamingTools/Nullinside.TwitchStreamingTools.csproj", "src/Nullinside.TwitchStreamingTools/"]
 RUN dotnet restore "src/Nullinside.TwitchStreamingTools/Nullinside.TwitchStreamingTools.csproj"
 COPY src/ .
 WORKDIR "/src/Nullinside.TwitchStreamingTools"
