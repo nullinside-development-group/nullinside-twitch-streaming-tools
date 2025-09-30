@@ -1,12 +1,8 @@
-﻿using System.Reactive;
-
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 using Nullinside.TwitchStreamingTools.Models;
 using Nullinside.TwitchStreamingTools.Services;
-
-using ReactiveUI;
 
 namespace Nullinside.TwitchStreamingTools.Controls.ViewModels;
 

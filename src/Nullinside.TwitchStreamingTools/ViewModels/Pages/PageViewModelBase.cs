@@ -1,8 +1,4 @@
-﻿using System.Reactive;
-
-using CommunityToolkit.Mvvm.Input;
-
-using ReactiveUI;
+﻿using CommunityToolkit.Mvvm.Input;
 
 namespace Nullinside.TwitchStreamingTools.ViewModels.Pages;
 
