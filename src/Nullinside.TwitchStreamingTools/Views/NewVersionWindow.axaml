@@ -33,8 +33,8 @@
                     <TextBlock Text="{Binding ServerVersion}" HorizontalAlignment="Center" VerticalAlignment="Center" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal">
-                    <Button Command="{Binding UpdateSoftware}" Margin="0 10 0 0">Install New Version</Button>
-                    <Button Command="{Binding CloseWindow}" CommandParameter="{Binding ElementName=Window}"
+                    <Button Command="{Binding StartUpdateSoftwareCommand}" Margin="0 10 0 0">Install New Version</Button>
+                    <Button Command="{Binding CloseWindowCommand}" CommandParameter="{Binding ElementName=Window}"
                             Margin="10 10 0 0">
                         Close
                     </Button>

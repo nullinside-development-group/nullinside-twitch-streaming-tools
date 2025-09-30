@@ -3,13 +3,13 @@ using System.Diagnostics;
 using System.IO;
 using System.Net.Http;
 using System.Net.WebSockets;
-using System.Reactive;
 using System.Threading;
 using System.Threading.Tasks;
 
 using Avalonia.Media.Imaging;
 
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 
 using log4net;
 
@@ -21,8 +21,6 @@ using Nullinside.Api.Common.Twitch;
 using Nullinside.TwitchStreamingTools.Services;
 using Nullinside.TwitchStreamingTools.Utilities;
 
-using ReactiveUI;
-
 using TwitchLib.Api.Helix.Models.Users.GetUsers;
 
 namespace Nullinside.TwitchStreamingTools.ViewModels.Pages;
@@ -30,7 +28,7 @@ namespace Nullinside.TwitchStreamingTools.ViewModels.Pages;
 /// <summary>
 ///   Handles binding your account to the application.
 /// </summary>
-public partial class AccountViewModel : PageViewModelBase, IDisposable {
+public partial class AccountViewModel : PageViewModelBase {
   /// <summary>
   ///   The path to the folder containing cached profile images.
   /// </summary>
@@ -92,8 +90,6 @@ public partial class AccountViewModel : PageViewModelBase, IDisposable {
     _twitchAccountService.OnCredentialsStatusChanged += OnCredentialsStatusChanged;
     _twitchAccountService.OnCredentialsChanged += OnCredentialsChanged;
     _configuration = configuration;
-    OnPerformLogin = ReactiveCommand.Create(PerformLogin);
-    OnLogout = ReactiveCommand.Create(ClearCredentials);
 
     // Set the initial state of the ui
     HasValidOAuthToken = _twitchAccountService.CredentialsAreValid;
@@ -104,25 +100,9 @@ public partial class AccountViewModel : PageViewModelBase, IDisposable {
   public override string IconResourceKey { get; } = "InprivateAccountRegular";
 
   /// <summary>
-  ///   Called when the user clicks the login button.
-  /// </summary>
-  public ReactiveCommand<Unit, Unit> OnPerformLogin { get; }
-
-  /// <summary>
-  ///   Called when logging out the current user.
-  /// </summary>
-  public ReactiveCommand<Unit, Unit> OnLogout { get; }
-
-  /// <summary>
   ///   The application version number.
   /// </summary>
   public string? Version => Constants.APP_VERSION;
-
-  /// <inheritdoc />
-  public void Dispose() {
-    OnPerformLogin.Dispose();
-    OnLogout.Dispose();
-  }
 
   /// <summary>
   ///   Loads the profile image when the UI loads.
@@ -202,7 +182,8 @@ public partial class AccountViewModel : PageViewModelBase, IDisposable {
   /// <summary>
   ///   Launches the computer's default browser to generate an OAuth token.
   /// </summary>
-  private async void PerformLogin() {
+  [RelayCommand]
+  private async Task PerformLogin() {
     LoggingIn = true;
     try {
       CancellationToken token = CancellationToken.None;
@@ -251,6 +232,7 @@ public partial class AccountViewModel : PageViewModelBase, IDisposable {
   /// <summary>
   ///   Clears the credentials out (logging out).
   /// </summary>
+  [RelayCommand]
   private void ClearCredentials() {
     _twitchAccountService.DeleteCredentials();
   }

@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Reactive;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -11,12 +10,11 @@ using Avalonia.Controls;
 using Avalonia.Media;
 
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 
 using Nullinside.Api.Common.Twitch;
 using Nullinside.TwitchStreamingTools.Models;
 using Nullinside.TwitchStreamingTools.Utilities;
-
-using ReactiveUI;
 
 using TwitchLib.Client.Events;
 
@@ -72,9 +70,6 @@ public partial class ChatViewModel : PageViewModelBase, IDisposable {
     _twitchClient = twitchClient;
     _configuration = configuration;
 
-    OnAddChat = ReactiveCommand.Create(OnAddChatCommand);
-    OnRemoveChat = ReactiveCommand.Create<string>(OnRemoveChatCommand);
-
     Application.Current!.TryFindResource("DeleteRegular", out object? icon);
     DeleteIcon = (StreamGeometry)icon!;
   }
@@ -87,16 +82,6 @@ public partial class ChatViewModel : PageViewModelBase, IDisposable {
   /// </summary>
   public StreamGeometry DeleteIcon { get; set; }
 
-  /// <summary>
-  ///   Called when adding a chat.
-  /// </summary>
-  public ReactiveCommand<Unit, Unit> OnAddChat { get; }
-
-  /// <summary>
-  ///   Called when removing a chat.
-  /// </summary>
-  public ReactiveCommand<string, Unit> OnRemoveChat { get; }
-
   /// <inheritdoc />
   public void Dispose() {
     foreach (TwitchChatConfiguration channel in _configuration.TwitchChats ?? []) {
@@ -106,15 +91,13 @@ public partial class ChatViewModel : PageViewModelBase, IDisposable {
 
       _twitchClient.RemoveMessageCallback(channel.TwitchChannel, OnChatMessage);
     }
-
-    OnAddChat.Dispose();
-    OnRemoveChat.Dispose();
   }
 
   /// <summary>
   ///   Handles adding a new chat to monitor.
   /// </summary>
-  private void OnAddChatCommand() {
+  [RelayCommand]
+  private void AddChat() {
     // Ensure we have a username
     string? username = TwitchChatName?.Trim();
     if (string.IsNullOrWhiteSpace(username) || SelectedTwitchChatNames.Contains(username)) {
@@ -147,7 +130,8 @@ public partial class ChatViewModel : PageViewModelBase, IDisposable {
   ///   Handles removing a chat we were monitoring.
   /// </summary>
   /// <param name="channel">The chat to remove.</param>
-  private void OnRemoveChatCommand(string channel) {
+  [RelayCommand]
+  private void RemoveChat(string channel) {
     SelectedTwitchChatNames.Remove(channel);
 
     // Remove the callback

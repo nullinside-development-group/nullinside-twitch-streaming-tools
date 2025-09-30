@@ -1,16 +1,14 @@
 ﻿using System.Diagnostics;
 using System.Threading.Tasks;
-using System.Windows.Input;
 
 using Avalonia.Controls;
 using Avalonia.Threading;
 
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 
 using Nullinside.Api.Common.Desktop;
 using Nullinside.TwitchStreamingTools.Views;
-
-using ReactiveUI;
 
 namespace Nullinside.TwitchStreamingTools.ViewModels;
 
@@ -42,9 +40,6 @@ public partial class NewVersionWindowViewModel : ViewModelBase {
   ///   Initializes a new instance of the <see cref="NewVersionWindowViewModel" /> class.
   /// </summary>
   public NewVersionWindowViewModel() {
-    UpdateSoftware = ReactiveCommand.Create(StartUpdateSoftware);
-    CloseWindow = ReactiveCommand.Create<Window>(CloseWindowCommand);
-
     // asynchronously determine the current version number.
     Task.Factory.StartNew(async () => {
       GithubLatestReleaseJson? version =
@@ -68,26 +63,18 @@ public partial class NewVersionWindowViewModel : ViewModelBase {
   }
 
   /// <summary>
-  ///   A command to update the software.
-  /// </summary>
-  public ICommand UpdateSoftware { get; }
-
-  /// <summary>
-  ///   A command to close the current window.
-  /// </summary>
-  public ICommand CloseWindow { get; }
-
-  /// <summary>
   ///   A command to close the current window.
   /// </summary>
   /// <param name="self">The reference to our own window.</param>
-  private void CloseWindowCommand(Window self) {
+  [RelayCommand]
+  private void CloseWindow(Window self) {
     self.Close();
   }
 
   /// <summary>
   ///   Launches the web browser at the new release page.
   /// </summary>
+  [RelayCommand]
   private void StartUpdateSoftware() {
     IsUpdating = true;
     GitHubUpdateManager.PrepareUpdate()

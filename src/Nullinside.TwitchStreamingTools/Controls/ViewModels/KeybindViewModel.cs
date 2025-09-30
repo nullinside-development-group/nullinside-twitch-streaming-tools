@@ -1,6 +1,7 @@
 ﻿using System.Reactive;
 
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 
 using Nullinside.TwitchStreamingTools.Models;
 using Nullinside.TwitchStreamingTools.Services;
@@ -34,17 +35,12 @@ public partial class KeybindViewModel : ObservableObject {
   /// <param name="service">The listener for keystrokes on the keyboard.</param>
   public KeybindViewModel(IGlobalKeyPressService service) {
     _service = service;
-    ListenForKeystroke = ReactiveCommand.Create(StartListenKeystroke);
   }
-
-  /// <summary>
-  ///   Listens for keystrokes.
-  /// </summary>
-  public ReactiveCommand<Unit, Unit> ListenForKeystroke { get; }
 
   /// <summary>
   ///   Starts listening for keystrokes.
   /// </summary>
+  [RelayCommand]
   private void StartListenKeystroke() {
     Listening = true;
     _service.OnKeystroke -= OnKeystroke;

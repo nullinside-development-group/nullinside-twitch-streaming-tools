@@ -10,7 +10,7 @@
     <StackPanel>
         <Button IsVisible="{Binding !Listening}"
                 Content="{Binding Keybind, TargetNullValue='[None]'}"
-                Command="{Binding ListenForKeystroke}"
+                Command="{Binding StartListenKeystrokeCommand}"
                 ToolTip.Tip="ESC to unset" />
         <StackPanel IsVisible="{Binding Listening}"
                     Orientation="Horizontal">
