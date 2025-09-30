@@ -2,8 +2,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:settingsView="clr-namespace:Nullinside.TwitchStreamingTools.Views.Pages.SettingsView"
-             xmlns:controls="clr-namespace:Nullinside.TwitchStreamingTools.Controls"
              xmlns:pages1="clr-namespace:Nullinside.TwitchStreamingTools.ViewModels.Pages.SettingsView"
              xmlns:controls1="clr-namespace:Nullinside.TwitchStreamingTools.Controls"
              xmlns:settingsView1="clr-namespace:Nullinside.TwitchStreamingTools.Views.Pages.SettingsView"
@@ -41,8 +39,8 @@
                 Skip TTS Button:
             </Label>
             <controls1:Keybind Grid.Row="0"
-                              Grid.Column="1"
-                              DataContext="{Binding SkipTtsKeyBinding}" />
+                               Grid.Column="1"
+                               DataContext="{Binding SkipTtsKeyBinding}" />
             <Label Grid.Row="1"
                    Grid.Column="0"
                    HorizontalAlignment="Right"
@@ -50,8 +48,8 @@
                 Skip All TTS Button:
             </Label>
             <controls1:Keybind Grid.Row="1"
-                              Grid.Column="1"
-                              DataContext="{Binding SkipAllTtsKeyBinding}" />
+                               Grid.Column="1"
+                               DataContext="{Binding SkipAllTtsKeyBinding}" />
             <Label Grid.Row="2"
                    Grid.Column="0"
                    HorizontalAlignment="Right"
@@ -230,7 +228,7 @@
             <Grid Grid.Row="8"
                   Grid.Column="1">
                 <settingsView1:TtsSkipUsernamesControl Margin="0,0,5,0"
-                                                      DataContext="{Binding TtsSkipUsernamesViewModel}" />
+                                                       DataContext="{Binding TtsSkipUsernamesViewModel}" />
             </Grid>
             <Label Grid.Row="9"
                    Grid.Column="0"
@@ -242,7 +240,7 @@
             <Grid Grid.Row="9"
                   Grid.Column="1">
                 <settingsView1:TtsPhoneticWordsControl Margin="0,0,5,0"
-                                                      DataContext="{Binding TtsPhoneticWordsViewModel}" />
+                                                       DataContext="{Binding TtsPhoneticWordsViewModel}" />
             </Grid>
         </Grid>
     </ScrollViewer>

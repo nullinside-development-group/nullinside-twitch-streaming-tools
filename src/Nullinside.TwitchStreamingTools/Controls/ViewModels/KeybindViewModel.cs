@@ -19,7 +19,7 @@ public class KeybindViewModel : ViewModelBase {
   /// <summary>
   ///   The keybind, if set.
   /// </summary>
-  private Nullinside.TwitchStreamingTools.Controls.ViewModels.Keybind? _keybind;
+  private Keybind? _keybind;
 
   /// <summary>
   ///   Initializes a new instance of the <see cref="KeybindViewModel" /> class.
@@ -33,7 +33,7 @@ public class KeybindViewModel : ViewModelBase {
   /// <summary>
   ///   The keybind.
   /// </summary>
-  public Nullinside.TwitchStreamingTools.Controls.ViewModels.Keybind? Keybind {
+  public Keybind? Keybind {
     get => _keybind;
     set => this.RaiseAndSetIfChanged(ref _keybind, value);
   }
@@ -55,7 +55,7 @@ public class KeybindViewModel : ViewModelBase {
   ///   Called whenever a keystroke is pressed.
   /// </summary>
   /// <param name="keybind">The key that was press.</param>
-  private void OnKeystroke(Nullinside.TwitchStreamingTools.Controls.ViewModels.Keybind keybind) {
+  private void OnKeystroke(Keybind keybind) {
     if (_service.IsModifier(keybind.Key)) {
       return;
     }
