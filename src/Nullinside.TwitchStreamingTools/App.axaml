@@ -1,7 +1,6 @@
 <Application xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="Nullinside.TwitchStreamingTools.App"
-             xmlns:twitchStreamingTools="clr-namespace:Nullinside.TwitchStreamingTools"
              xmlns:twitchStreamingTools1="clr-namespace:Nullinside.TwitchStreamingTools"
              RequestedThemeVariant="Dark">
     <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->

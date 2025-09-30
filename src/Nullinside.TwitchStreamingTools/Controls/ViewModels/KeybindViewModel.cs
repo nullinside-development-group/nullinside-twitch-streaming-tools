@@ -1,5 +1,6 @@
 ﻿using System.Reactive;
 
+using Nullinside.TwitchStreamingTools.Models;
 using Nullinside.TwitchStreamingTools.Services;
 using Nullinside.TwitchStreamingTools.ViewModels;
 
@@ -19,7 +20,12 @@ public class KeybindViewModel : ViewModelBase {
   /// <summary>
   ///   The keybind, if set.
   /// </summary>
-  private Nullinside.TwitchStreamingTools.Controls.ViewModels.Keybind? _keybind;
+  private Keybind? _keybind;
+
+  /// <summary>
+  ///   True if listening for keystrokes, false otherwise.
+  /// </summary>
+  private bool _listening;
 
   /// <summary>
   ///   Initializes a new instance of the <see cref="KeybindViewModel" /> class.
@@ -33,9 +39,17 @@ public class KeybindViewModel : ViewModelBase {
   /// <summary>
   ///   The keybind.
   /// </summary>
-  public Nullinside.TwitchStreamingTools.Controls.ViewModels.Keybind? Keybind {
+  public Keybind? Keybind {
     get => _keybind;
     set => this.RaiseAndSetIfChanged(ref _keybind, value);
+  }
+
+  /// <summary>
+  ///   True if listening for keystrokes, false otherwise.
+  /// </summary>
+  public bool Listening {
+    get => _listening;
+    set => this.RaiseAndSetIfChanged(ref _listening, value);
   }
 
   /// <summary>
@@ -47,6 +61,7 @@ public class KeybindViewModel : ViewModelBase {
   ///   Starts listening for keystrokes.
   /// </summary>
   private void StartListenKeystroke() {
+    Listening = true;
     _service.OnKeystroke -= OnKeystroke;
     _service.OnKeystroke += OnKeystroke;
   }
@@ -55,12 +70,13 @@ public class KeybindViewModel : ViewModelBase {
   ///   Called whenever a keystroke is pressed.
   /// </summary>
   /// <param name="keybind">The key that was press.</param>
-  private void OnKeystroke(Nullinside.TwitchStreamingTools.Controls.ViewModels.Keybind keybind) {
+  private void OnKeystroke(Keybind keybind) {
     if (_service.IsModifier(keybind.Key)) {
       return;
     }
 
-    Keybind = keybind;
+    Keybind = keybind.Key == Keys.Escape ? null : keybind;
     _service.OnKeystroke -= OnKeystroke;
+    Listening = false;
   }
 }
