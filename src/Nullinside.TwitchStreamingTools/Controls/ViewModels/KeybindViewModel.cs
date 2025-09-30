@@ -1,5 +1,6 @@
 ﻿using System.Reactive;
 
+using Nullinside.TwitchStreamingTools.Models;
 using Nullinside.TwitchStreamingTools.Services;
 using Nullinside.TwitchStreamingTools.ViewModels;
 
@@ -22,6 +23,11 @@ public class KeybindViewModel : ViewModelBase {
   private Keybind? _keybind;
 
   /// <summary>
+  ///   True if listening for keystrokes, false otherwise.
+  /// </summary>
+  private bool _listening;
+
+  /// <summary>
   ///   Initializes a new instance of the <see cref="KeybindViewModel" /> class.
   /// </summary>
   /// <param name="service">The listener for keystrokes on the keyboard.</param>
@@ -39,6 +45,14 @@ public class KeybindViewModel : ViewModelBase {
   }
 
   /// <summary>
+  ///   True if listening for keystrokes, false otherwise.
+  /// </summary>
+  public bool Listening {
+    get => _listening;
+    set => this.RaiseAndSetIfChanged(ref _listening, value);
+  }
+
+  /// <summary>
   ///   Listens for keystrokes.
   /// </summary>
   public ReactiveCommand<Unit, Unit> ListenForKeystroke { get; }
@@ -47,6 +61,7 @@ public class KeybindViewModel : ViewModelBase {
   ///   Starts listening for keystrokes.
   /// </summary>
   private void StartListenKeystroke() {
+    Listening = true;
     _service.OnKeystroke -= OnKeystroke;
     _service.OnKeystroke += OnKeystroke;
   }
@@ -60,7 +75,8 @@ public class KeybindViewModel : ViewModelBase {
       return;
     }
 
-    Keybind = keybind;
+    Keybind = keybind.Key == Keys.Escape ? null : keybind;
     _service.OnKeystroke -= OnKeystroke;
+    Listening = false;
   }
 }
