@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 
-using Nullinside.TwitchStreamingTools.ViewModels;
+using CommunityToolkit.Mvvm.ComponentModel;
 
-using ReactiveUI;
+using Nullinside.TwitchStreamingTools.ViewModels;
 
 namespace Nullinside.TwitchStreamingTools.Controls.ViewModels;
 
 /// <summary>
 ///   Handles maintaining two lists and moving items between them.
 /// </summary>
-public class TwoListViewModel : ViewModelBase {
+public partial class TwoListViewModel : ViewModelBase {
   /// <summary>
   ///   The behavior to maintain when double clicking
   /// </summary>
@@ -26,44 +26,50 @@ public class TwoListViewModel : ViewModelBase {
     DELETE_FROM_LIST
   }
 
-  private string? _leftHeader;
+  /// <summary>
+  ///   The header on the left list.
+  /// </summary>
+  [ObservableProperty] private string? _leftHeader;
 
   /// <summary>
   ///   The collection of items in the left list.
   /// </summary>
-  private ObservableCollection<string> _leftList;
+  [ObservableProperty] private ObservableCollection<string> _leftList;
 
   /// <summary>
   ///   The method to call when an item in the left list is double clicked.
   /// </summary>
-  private Action<string?>? _onLeftDoubleClick;
+  [ObservableProperty] private Action<string?>? _onLeftDoubleClick;
 
   /// <summary>
   ///   The method to call when an item in the right list is double clicked.
   /// </summary>
-  private Action<string?>? _onRightDoubleClick;
+  [ObservableProperty] private Action<string?>? _onRightDoubleClick;
 
-  private string? _rightHeader;
+  /// <summary>
+  ///   The header on the right list.
+  /// </summary>
+  [ObservableProperty] private string? _rightHeader;
 
   /// <summary>
   ///   The collection of items in the right list.
   /// </summary>
-  private ObservableCollection<string> _rightList;
+  [ObservableProperty] private ObservableCollection<string> _rightList;
 
   /// <summary>
   ///   The behavior of how to handle double clicking on items in the right list.
   /// </summary>
-  private DoubleClickBehavior _rightListBehavior;
+  [ObservableProperty] private DoubleClickBehavior _rightListBehavior;
 
   /// <summary>
   ///   A value indicating whether the left list should be sorted.
   /// </summary>
-  private bool _sortLeftList;
+  [ObservableProperty] private bool _sortLeftList;
 
   /// <summary>
   ///   A value indicating whether the right list should be sorted.
   /// </summary>
-  private bool _sortRightList;
+  [ObservableProperty] private bool _sortRightList;
 
   /// <summary>
   ///   Initializes a new instance of the <see cref="TwoListViewModel" /> class.
@@ -73,78 +79,6 @@ public class TwoListViewModel : ViewModelBase {
     _rightList = new ObservableCollection<string>();
     OnLeftDoubleClick += OnLeftDoubleClicked;
     OnRightDoubleClick += OnRightDoubleClicked;
-  }
-
-  /// <summary>
-  ///   Gets or sets the collection of items in the left list.
-  /// </summary>
-  public ObservableCollection<string> LeftList {
-    get => _leftList;
-    set => this.RaiseAndSetIfChanged(ref _leftList, value);
-  }
-
-  /// <summary>
-  ///   Gets or sets the collection of items in the right list.
-  /// </summary>
-  public Action<string?>? OnLeftDoubleClick {
-    get => _onLeftDoubleClick;
-    set => this.RaiseAndSetIfChanged(ref _onLeftDoubleClick, value);
-  }
-
-  /// <summary>
-  ///   Gets or sets the method to call when an item in the left list is double clicked.
-  /// </summary>
-  public Action<string?>? OnRightDoubleClick {
-    get => _onRightDoubleClick;
-    set => this.RaiseAndSetIfChanged(ref _onRightDoubleClick, value);
-  }
-
-  /// <summary>
-  ///   Gets or sets the method to call when an item in the right list is double clicked.
-  /// </summary>
-  public ObservableCollection<string> RightList {
-    get => _rightList;
-    set => this.RaiseAndSetIfChanged(ref _rightList, value);
-  }
-
-  /// <summary>
-  ///   Gets or sets the behavior of how to handle double clicking on items in the right list.
-  /// </summary>
-  public DoubleClickBehavior RightListBehavior {
-    get => _rightListBehavior;
-    set => this.RaiseAndSetIfChanged(ref _rightListBehavior, value);
-  }
-
-  /// <summary>
-  ///   Gets or sets a value indicating whether the left list should be sorted.
-  /// </summary>
-  public bool SortLeftList {
-    get => _sortLeftList;
-    set => this.RaiseAndSetIfChanged(ref _sortLeftList, value);
-  }
-
-  /// <summary>
-  ///   Gets or sets a value indicating whether the right list should be sorted.
-  /// </summary>
-  public bool SortRightList {
-    get => _sortRightList;
-    set => this.RaiseAndSetIfChanged(ref _sortRightList, value);
-  }
-
-  /// <summary>
-  ///   The left header.
-  /// </summary>
-  public string? LeftHeader {
-    get => _leftHeader;
-    set => this.RaiseAndSetIfChanged(ref _leftHeader, value);
-  }
-
-  /// <summary>
-  ///   The right header.
-  /// </summary>
-  public string? RightHeader {
-    get => _rightHeader;
-    set => this.RaiseAndSetIfChanged(ref _rightHeader, value);
   }
 
   /// <summary>

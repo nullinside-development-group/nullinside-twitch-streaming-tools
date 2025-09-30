@@ -10,6 +10,8 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media;
 
+using CommunityToolkit.Mvvm.ComponentModel;
+
 using Nullinside.Api.Common.Twitch;
 using Nullinside.TwitchStreamingTools.Models;
 using Nullinside.TwitchStreamingTools.Utilities;
@@ -23,7 +25,7 @@ namespace Nullinside.TwitchStreamingTools.ViewModels.Pages;
 /// <summary>
 ///   Handles settings up and viewing chat.
 /// </summary>
-public class ChatViewModel : PageViewModelBase, IDisposable {
+public partial class ChatViewModel : PageViewModelBase, IDisposable {
   /// <summary>
   ///   The application configuration;
   /// </summary>
@@ -42,22 +44,22 @@ public class ChatViewModel : PageViewModelBase, IDisposable {
   /// <summary>
   ///   The list of chat names selected in the list.
   /// </summary>
-  private ObservableCollection<string> _selectedTwitchChatNames = [];
+  [ObservableProperty] private ObservableCollection<string> _selectedTwitchChatNames = [];
 
   /// <summary>
   ///   The current position of the cursor for the text box showing our chat logs, increment to move down.
   /// </summary>
-  private int _textBoxCursorPosition;
+  [ObservableProperty] private int _textBoxCursorPosition;
 
   /// <summary>
   ///   The current twitch chat.
   /// </summary>
-  private string? _twitchChat = string.Empty;
+  [ObservableProperty] private string? _twitchChat = string.Empty;
 
   /// <summary>
   ///   The current twitch chat name entered by the user.
   /// </summary>
-  private string? _twitchChatName;
+  [ObservableProperty] private string? _twitchChatName;
 
   /// <summary>
   ///   Initializes a new instance of the <see cref="ChatViewModel" /> class.
@@ -95,38 +97,6 @@ public class ChatViewModel : PageViewModelBase, IDisposable {
   /// </summary>
   public ReactiveCommand<string, Unit> OnRemoveChat { get; }
 
-  /// <summary>
-  ///   The current twitch chat name entered by the user.
-  /// </summary>
-  public string? TwitchChatName {
-    get => _twitchChatName;
-    set => this.RaiseAndSetIfChanged(ref _twitchChatName, value);
-  }
-
-  /// <summary>
-  ///   The current twitch chat.
-  /// </summary>
-  public string? TwitchChat {
-    get => _twitchChat;
-    set => this.RaiseAndSetIfChanged(ref _twitchChat, value);
-  }
-
-  /// <summary>
-  ///   The list of chat names selected in the list.
-  /// </summary>
-  public ObservableCollection<string> ChatItems {
-    get => _selectedTwitchChatNames;
-    set => this.RaiseAndSetIfChanged(ref _selectedTwitchChatNames, value);
-  }
-
-  /// <summary>
-  ///   The current position of the cursor for the text box showing our chat logs, increment to move down.
-  /// </summary>
-  public int TextBoxCursorPosition {
-    get => _textBoxCursorPosition;
-    set => this.RaiseAndSetIfChanged(ref _textBoxCursorPosition, value);
-  }
-
   /// <inheritdoc />
   public void Dispose() {
     foreach (TwitchChatConfiguration channel in _configuration.TwitchChats ?? []) {
@@ -147,12 +117,11 @@ public class ChatViewModel : PageViewModelBase, IDisposable {
   private void OnAddChatCommand() {
     // Ensure we have a username
     string? username = TwitchChatName?.Trim();
-    if (string.IsNullOrWhiteSpace(username) || _selectedTwitchChatNames.Contains(username)) {
+    if (string.IsNullOrWhiteSpace(username) || SelectedTwitchChatNames.Contains(username)) {
       return;
     }
 
-    // Add it to the list.
-    _selectedTwitchChatNames.Add(username);
+    SelectedTwitchChatNames.Add(username);
 
     // Add the callback, we don't need to wait for it to return it can run in the background.
     _ = _twitchClient.AddMessageCallback(username, OnChatMessage);
@@ -162,7 +131,7 @@ public class ChatViewModel : PageViewModelBase, IDisposable {
 
     // Update and write the configuration
     _configuration.TwitchChats = (
-      from user in _selectedTwitchChatNames
+      from user in SelectedTwitchChatNames
       select new TwitchChatConfiguration {
         TwitchChannel = user,
         OutputDevice = Configuration.GetDefaultAudioDevice(),
@@ -179,15 +148,14 @@ public class ChatViewModel : PageViewModelBase, IDisposable {
   /// </summary>
   /// <param name="channel">The chat to remove.</param>
   private void OnRemoveChatCommand(string channel) {
-    // Remove it from the list
-    _selectedTwitchChatNames.Remove(channel);
+    SelectedTwitchChatNames.Remove(channel);
 
     // Remove the callback
     _twitchClient.RemoveMessageCallback(channel, OnChatMessage);
 
     // Update and write the configuration
     _configuration.TwitchChats = (
-      from user in _selectedTwitchChatNames
+      from user in SelectedTwitchChatNames
       select new TwitchChatConfiguration {
         TwitchChannel = user,
         OutputDevice = Configuration.GetDefaultAudioDevice(),
@@ -204,7 +172,7 @@ public class ChatViewModel : PageViewModelBase, IDisposable {
   /// </summary>
   /// <param name="msg">The message received.</param>
   private void OnChatMessage(OnMessageReceivedArgs msg) {
-    if (_selectedTwitchChatNames.Count > 1) {
+    if (SelectedTwitchChatNames.Count > 1) {
       TwitchChat = (TwitchChat + FormatChatMessage(msg.ChatMessage.Username, msg.ChatMessage.Message, msg.GetTimestamp() ?? DateTime.UtcNow, msg.ChatMessage.Channel)).Trim();
     }
     else {
@@ -275,7 +243,7 @@ public class ChatViewModel : PageViewModelBase, IDisposable {
         continue;
       }
 
-      _selectedTwitchChatNames.Add(channel.TwitchChannel);
+      SelectedTwitchChatNames.Add(channel.TwitchChannel);
       Task.Run(() => _twitchClient.AddMessageCallback(channel.TwitchChannel, OnChatMessage));
     }
   }

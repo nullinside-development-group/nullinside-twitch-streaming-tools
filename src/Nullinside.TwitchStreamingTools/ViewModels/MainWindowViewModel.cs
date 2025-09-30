@@ -4,6 +4,8 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive;
 
+using CommunityToolkit.Mvvm.ComponentModel;
+
 using DynamicData;
 
 using Microsoft.Extensions.DependencyInjection;
@@ -19,7 +21,7 @@ namespace Nullinside.TwitchStreamingTools.ViewModels;
 /// <summary>
 ///   The view model for the main UI.
 /// </summary>
-public class MainWindowViewModel : ViewModelBase {
+public partial class MainWindowViewModel : ViewModelBase {
   /// <summary>
   ///   The dependency injection service provider.
   /// </summary>
@@ -28,22 +30,22 @@ public class MainWindowViewModel : ViewModelBase {
   /// <summary>
   ///   A flag indicating whether the menu is open.
   /// </summary>
-  private bool _isMenuOpen = true;
+  [ObservableProperty] private bool _isMenuOpen = true;
 
   /// <summary>
   ///   True if the application is updating, false otherwise.
   /// </summary>
-  private bool _isUpdating;
+  [ObservableProperty] private bool _isUpdating;
 
   /// <summary>
   ///   The open page.
   /// </summary>
-  private ViewModelBase _page;
+  [ObservableProperty] private ViewModelBase _page;
 
   /// <summary>
   ///   The currently selected page.
   /// </summary>
-  private MenuItem _selectedMenuItem;
+  [ObservableProperty] private MenuItem _selectedMenuItem;
 
   /// <summary>
   ///   Initializes a new instance of the <see cref="MainWindowViewModel" /> class.
@@ -78,41 +80,9 @@ public class MainWindowViewModel : ViewModelBase {
   public ObservableCollection<MenuItem> MenuItems { get; set; }
 
   /// <summary>
-  ///   A flag indicating whether the menu is open.
-  /// </summary>
-  public bool IsMenuOpen {
-    get => _isMenuOpen;
-    set => this.RaiseAndSetIfChanged(ref _isMenuOpen, value);
-  }
-
-  /// <summary>
   ///   Called when toggling the menu open and close.
   /// </summary>
   public ReactiveCommand<Unit, bool> OnToggleMenu { get; }
-
-  /// <summary>
-  ///   The open page.
-  /// </summary>
-  public ViewModelBase Page {
-    get => _page;
-    set => this.RaiseAndSetIfChanged(ref _page, value);
-  }
-
-  /// <summary>
-  ///   The currently selected page.
-  /// </summary>
-  public MenuItem SelectedMenuItem {
-    get => _selectedMenuItem;
-    set => this.RaiseAndSetIfChanged(ref _selectedMenuItem, value);
-  }
-
-  /// <summary>
-  ///   True if the application is updating, false otherwise.
-  /// </summary>
-  public bool IsUpdating {
-    get => _isUpdating;
-    set => this.RaiseAndSetIfChanged(ref _isUpdating, value);
-  }
 
   /// <summary>
   ///   Initializes the menu items.

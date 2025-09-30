@@ -3,16 +3,16 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 
-using Nullinside.TwitchStreamingTools.Models;
+using CommunityToolkit.Mvvm.ComponentModel;
 
-using ReactiveUI;
+using Nullinside.TwitchStreamingTools.Models;
 
 namespace Nullinside.TwitchStreamingTools.ViewModels.Pages.SettingsView;
 
 /// <summary>
 ///   The view responsible for maintaining the list of phonetic words.
 /// </summary>
-public class TtsPhoneticWordsViewModel : ViewModelBase {
+public partial class TtsPhoneticWordsViewModel : ViewModelBase {
   /// <summary>
   ///   The application configuration.
   /// </summary>
@@ -26,17 +26,17 @@ public class TtsPhoneticWordsViewModel : ViewModelBase {
   /// <summary>
   ///   The user entered phonetic pronunciation of the word.
   /// </summary>
-  private string? _userEnteredPhonetic;
+  [ObservableProperty] private string? _userEnteredPhonetic;
 
   /// <summary>
   ///   The user entered word to pronounce phonetically.
   /// </summary>
-  private string? _userEnteredWord;
+  [ObservableProperty] private string? _userEnteredWord;
 
   /// <summary>
   ///   The collection of all phonetic words.
   /// </summary>
-  private ObservableCollection<PhoneticWord> _wordsToPhonetics = new();
+  [ObservableProperty] private ObservableCollection<PhoneticWord> _wordsToPhonetics = new();
 
   /// <summary>
   ///   Initializes a new instance of the <see cref="TtsPhoneticWordsViewModel" /> class.
@@ -51,30 +51,6 @@ public class TtsPhoneticWordsViewModel : ViewModelBase {
     else {
       _configuration.TtsPhonetics = new Dictionary<string, string>();
     }
-  }
-
-  /// <summary>
-  ///   Gets or sets the user entered phonetic pronunciation of the word.
-  /// </summary>
-  public string? UserEnteredPhonetic {
-    get => _userEnteredPhonetic;
-    set => this.RaiseAndSetIfChanged(ref _userEnteredPhonetic, value);
-  }
-
-  /// <summary>
-  ///   Gets or sets the user entered word to pronounce phonetically.
-  /// </summary>
-  public string? UserEnteredWord {
-    get => _userEnteredWord;
-    set => this.RaiseAndSetIfChanged(ref _userEnteredWord, value);
-  }
-
-  /// <summary>
-  ///   Gets or sets the list of words/usernames and their phonetic pronunciations.
-  /// </summary>
-  public ObservableCollection<PhoneticWord> WordsToPhonetics {
-    get => _wordsToPhonetics;
-    set => this.RaiseAndSetIfChanged(ref _wordsToPhonetics, value);
   }
 
   /// <summary>
@@ -95,12 +71,12 @@ public class TtsPhoneticWordsViewModel : ViewModelBase {
       return;
     }
 
-    PhoneticWord? entry = _wordsToPhonetics.FirstOrDefault(w => word.Equals(w.Word));
+    PhoneticWord? entry = WordsToPhonetics.FirstOrDefault(w => word.Equals(w.Word));
     if (null == entry) {
       return;
     }
 
-    _wordsToPhonetics.Remove(entry);
+    WordsToPhonetics.Remove(entry);
     RemoveFromConfig(word);
   }
 
@@ -113,7 +89,7 @@ public class TtsPhoneticWordsViewModel : ViewModelBase {
       return;
     }
 
-    PhoneticWord? entry = _wordsToPhonetics.FirstOrDefault(w => word.Equals(w.Word));
+    PhoneticWord? entry = WordsToPhonetics.FirstOrDefault(w => word.Equals(w.Word));
     if (null == entry) {
       return;
     }
@@ -134,14 +110,13 @@ public class TtsPhoneticWordsViewModel : ViewModelBase {
     // If we are not currently editing.
     if (null == _editingPhonetic) {
       // If the word already exists in the list and this would be a duplicate then change the existing word.
-      PhoneticWord? existing = _wordsToPhonetics.FirstOrDefault(w => UserEnteredWord.Equals(w.Word, StringComparison.InvariantCultureIgnoreCase));
+      PhoneticWord? existing = WordsToPhonetics.FirstOrDefault(w => UserEnteredWord.Equals(w.Word, StringComparison.InvariantCultureIgnoreCase));
       if (null != existing) {
         existing.Word = UserEnteredWord;
         existing.Phonetic = UserEnteredPhonetic;
       }
       else {
-        // Otherwise, make a new word.
-        _wordsToPhonetics.Add(new PhoneticWord(this, UserEnteredWord, UserEnteredPhonetic));
+        WordsToPhonetics.Add(new PhoneticWord(this, UserEnteredWord, UserEnteredPhonetic));
       }
     }
     else {

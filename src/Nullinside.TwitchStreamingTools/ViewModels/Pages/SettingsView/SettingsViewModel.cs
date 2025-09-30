@@ -1,9 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Reactive;
 using System.Speech.Synthesis;
+
+using CommunityToolkit.Mvvm.ComponentModel;
 
 using Nullinside.TwitchStreamingTools.Controls.ViewModels;
 using Nullinside.TwitchStreamingTools.Models;
@@ -16,7 +19,7 @@ namespace Nullinside.TwitchStreamingTools.ViewModels.Pages.SettingsView;
 /// <summary>
 ///   Handles binding your application settings.
 /// </summary>
-public class SettingsViewModel : PageViewModelBase {
+public partial class SettingsViewModel : PageViewModelBase {
   /// <summary>
   ///   The application configuration.
   /// </summary>
@@ -35,7 +38,7 @@ public class SettingsViewModel : PageViewModelBase {
   /// <summary>
   ///   The list of possible output devices that exist on the machine.
   /// </summary>
-  private ObservableCollection<string> _outputDevices;
+  [ObservableProperty] private ObservableCollection<string> _outputDevices;
 
   /// <summary>
   ///   Change sound pitch by n semitones (-60 to +60 semitones)
@@ -70,17 +73,17 @@ public class SettingsViewModel : PageViewModelBase {
   /// <summary>
   ///   True if the advanced Text-to-Speech (TTS) settings are displayed.
   /// </summary>
-  private bool _showAdvancedTts;
+  [ObservableProperty] private bool _showAdvancedTts;
 
   /// <summary>
   ///   The keybind for skipping all TTS messages.
   /// </summary>
-  private KeybindViewModel _skipAllTtsKeyBinding;
+  [ObservableProperty] private KeybindViewModel _skipAllTtsKeyBinding;
 
   /// <summary>
   ///   The keybind for skipping TTS messages.
   /// </summary>
-  private KeybindViewModel _skipTtsKeyBinding;
+  [ObservableProperty] private KeybindViewModel _skipTtsKeyBinding;
 
   /// <summary>
   ///   The speed (as a multiplicative).
@@ -95,17 +98,17 @@ public class SettingsViewModel : PageViewModelBase {
   /// <summary>
   ///   The view model for the phonetic words list.
   /// </summary>
-  private TtsPhoneticWordsViewModel _ttsPhoneticWordsViewModel;
+  [ObservableProperty] private TtsPhoneticWordsViewModel _ttsPhoneticWordsViewModel;
 
   /// <summary>
   ///   The control responsible for managing the list of usernames to skip.
   /// </summary>
-  private TtsSkipUsernamesViewModel _ttsSkipUsernamesViewModel;
+  [ObservableProperty] private TtsSkipUsernamesViewModel _ttsSkipUsernamesViewModel;
 
   /// <summary>
   ///   The list of installed TTS voices on the machine.
   /// </summary>
-  private ObservableCollection<string> _ttsVoices;
+  [ObservableProperty] private ObservableCollection<string> _ttsVoices;
 
   /// <summary>
   ///   The volume to play the TTS messages at.
@@ -142,10 +145,10 @@ public class SettingsViewModel : PageViewModelBase {
     _sayUsernameWithMessage = _configuration.SayUsernameWithMessage;
     _skipTtsKeyBinding = keybindViewModel;
     _skipTtsKeyBinding.Keybind = _configuration.SkipTtsKey;
-    _skipTtsKeyBinding.Changed.Subscribe(OnSkipTtsKeybindChanged);
+    _skipTtsKeyBinding.PropertyChanged += OnSkipTtsKeybindChanged;
     _skipAllTtsKeyBinding = keybindAllViewModel;
     _skipAllTtsKeyBinding.Keybind = _configuration.SkipAllTtsKey;
-    _skipAllTtsKeyBinding.Changed.Subscribe(OnSkipAllTtsKeybindChanged);
+    _skipAllTtsKeyBinding.PropertyChanged += OnSkipAllTtsKeybindChanged;
 
     ToggleAdvancedTtsCommand = ReactiveCommand.Create(() => ShowAdvancedTts = !ShowAdvancedTts);
 
@@ -175,20 +178,12 @@ public class SettingsViewModel : PageViewModelBase {
   public override string IconResourceKey { get; } = "SettingsRegular";
 
   /// <summary>
-  ///   The list of output devices available on the machine.
-  /// </summary>
-  public ObservableCollection<string> OutputDevices {
-    get => _outputDevices;
-    set => this.RaiseAndSetIfChanged(ref _outputDevices, value);
-  }
-
-  /// <summary>
   ///   The selected output device that audio will be sent to.
   /// </summary>
   public string? SelectedOutputDevice {
     get => _selectedOutputDevice;
     set {
-      this.RaiseAndSetIfChanged(ref _selectedOutputDevice, value);
+      SetProperty(ref _selectedOutputDevice, value);
 
       // Go through each twitch chat and update their property
       foreach (TwitchChatConfiguration chat in _configuration.TwitchChats ?? []) {
@@ -200,20 +195,12 @@ public class SettingsViewModel : PageViewModelBase {
   }
 
   /// <summary>
-  ///   The list of TTS voices available on the machine.
-  /// </summary>
-  public ObservableCollection<string> TtsVoices {
-    get => _ttsVoices;
-    set => this.RaiseAndSetIfChanged(ref _ttsVoices, value);
-  }
-
-  /// <summary>
   ///   The selected TTS voice will be used.
   /// </summary>
   public string? SelectedTtsVoice {
     get => _selectedTtsVoice;
     set {
-      this.RaiseAndSetIfChanged(ref _selectedTtsVoice, value);
+      SetProperty(ref _selectedTtsVoice, value);
 
       // Go through each twitch chat and update their property
       foreach (TwitchChatConfiguration chat in _configuration.TwitchChats ?? []) {
@@ -231,7 +218,7 @@ public class SettingsViewModel : PageViewModelBase {
   public uint TtsVolume {
     get => _ttsVolume;
     set {
-      this.RaiseAndSetIfChanged(ref _ttsVolume, value);
+      SetProperty(ref _ttsVolume, value);
 
       // Go through each twitch chat and update their property
       foreach (TwitchChatConfiguration chat in _configuration.TwitchChats ?? []) {
@@ -243,28 +230,12 @@ public class SettingsViewModel : PageViewModelBase {
   }
 
   /// <summary>
-  ///   Gets or sets the  view model for the phonetic words list.
-  /// </summary>
-  public TtsPhoneticWordsViewModel TtsPhoneticWordsViewModel {
-    get => _ttsPhoneticWordsViewModel;
-    set => this.RaiseAndSetIfChanged(ref _ttsPhoneticWordsViewModel, value);
-  }
-
-  /// <summary>
-  ///   Gets or sets the  view responsible for managing the list of usernames to skip.
-  /// </summary>
-  public TtsSkipUsernamesViewModel TtsSkipUsernamesViewModel {
-    get => _ttsSkipUsernamesViewModel;
-    set => this.RaiseAndSetIfChanged(ref _ttsSkipUsernamesViewModel, value);
-  }
-
-  /// <summary>
   ///   Change sound tempo by n percents (-95 to +5000 %)
   /// </summary>
   public int Tempo {
     get => _tempo;
     set {
-      this.RaiseAndSetIfChanged(ref _tempo, value);
+      SetProperty(ref _tempo, value);
       if (_configuration.SoundStretchArgs != null) {
         _configuration.SoundStretchArgs.Tempo = value;
         _configuration.WriteConfiguration();
@@ -278,7 +249,7 @@ public class SettingsViewModel : PageViewModelBase {
   public int Pitch {
     get => _pitch;
     set {
-      this.RaiseAndSetIfChanged(ref _pitch, value);
+      SetProperty(ref _pitch, value);
       if (_configuration.SoundStretchArgs != null) {
         _configuration.SoundStretchArgs.Pitch = value;
         _configuration.WriteConfiguration();
@@ -292,7 +263,7 @@ public class SettingsViewModel : PageViewModelBase {
   public int Rate {
     get => _rate;
     set {
-      this.RaiseAndSetIfChanged(ref _rate, value);
+      SetProperty(ref _rate, value);
       if (_configuration.SoundStretchArgs != null) {
         _configuration.SoundStretchArgs.Rate = value;
         _configuration.WriteConfiguration();
@@ -306,7 +277,7 @@ public class SettingsViewModel : PageViewModelBase {
   public int Bpm {
     get => _bpm;
     set {
-      this.RaiseAndSetIfChanged(ref _bpm, value);
+      SetProperty(ref _bpm, value);
       if (_configuration.SoundStretchArgs != null) {
         _configuration.SoundStretchArgs.Bpm = value;
         _configuration.WriteConfiguration();
@@ -320,7 +291,7 @@ public class SettingsViewModel : PageViewModelBase {
   public bool Quick {
     get => _quick;
     set {
-      this.RaiseAndSetIfChanged(ref _quick, value);
+      SetProperty(ref _quick, value);
       if (_configuration.SoundStretchArgs != null) {
         _configuration.SoundStretchArgs.Quick = value;
         _configuration.WriteConfiguration();
@@ -334,7 +305,7 @@ public class SettingsViewModel : PageViewModelBase {
   public bool AntiAliasingOff {
     get => _antiAliasingOff;
     set {
-      this.RaiseAndSetIfChanged(ref _antiAliasingOff, value);
+      SetProperty(ref _antiAliasingOff, value);
       if (_configuration.SoundStretchArgs != null) {
         _configuration.SoundStretchArgs.AntiAliasingOff = value;
         _configuration.WriteConfiguration();
@@ -348,20 +319,12 @@ public class SettingsViewModel : PageViewModelBase {
   public bool TurnOnSpeech {
     get => _turnOnSpeech;
     set {
-      this.RaiseAndSetIfChanged(ref _turnOnSpeech, value);
+      SetProperty(ref _turnOnSpeech, value);
       if (_configuration.SoundStretchArgs != null) {
         _configuration.SoundStretchArgs.TurnOnSpeech = value;
         _configuration.WriteConfiguration();
       }
     }
-  }
-
-  /// <summary>
-  ///   True if we are displaying the advanced TTS settings, false otherwise.
-  /// </summary>
-  public bool ShowAdvancedTts {
-    get => _showAdvancedTts;
-    set => this.RaiseAndSetIfChanged(ref _showAdvancedTts, value);
   }
 
   /// <summary>
@@ -375,7 +338,7 @@ public class SettingsViewModel : PageViewModelBase {
   public double Speed {
     get => _speed;
     set {
-      this.RaiseAndSetIfChanged(ref _speed, value);
+      SetProperty(ref _speed, value);
 
       // In terms of tempo, 50 is 100% faster (2x speed). Scaling that equation linearly, we get:
       double tempo = (value - 1.0) * 50;
@@ -394,7 +357,7 @@ public class SettingsViewModel : PageViewModelBase {
   public bool SayUsernameWithMessage {
     get => _sayUsernameWithMessage;
     set {
-      this.RaiseAndSetIfChanged(ref _sayUsernameWithMessage, value);
+      SetProperty(ref _sayUsernameWithMessage, value);
 
       _configuration.SayUsernameWithMessage = value;
       _configuration.WriteConfiguration();
@@ -402,44 +365,30 @@ public class SettingsViewModel : PageViewModelBase {
   }
 
   /// <summary>
-  ///   The keybind to use to skip TTS messages.
-  /// </summary>
-  public KeybindViewModel SkipTtsKeyBinding {
-    get => _skipTtsKeyBinding;
-    set => this.RaiseAndSetIfChanged(ref _skipTtsKeyBinding, value);
-  }
-
-  /// <summary>
-  ///   The keybind to use to skip all TTS messages.
-  /// </summary>
-  public KeybindViewModel SkipAllTtsKeyBinding {
-    get => _skipAllTtsKeyBinding;
-    set => this.RaiseAndSetIfChanged(ref _skipAllTtsKeyBinding, value);
-  }
-
-  /// <summary>
   ///   Handles updating the configuration when the skip TTS keybind changes.
   /// </summary>
-  /// <param name="args">The arguments about the properties that changed.</param>
-  private void OnSkipTtsKeybindChanged(IReactivePropertyChangedEventArgs<IReactiveObject> args) {
-    if (!nameof(_skipTtsKeyBinding.Keybind).Equals(args.PropertyName)) {
+  /// <param name="_">Unused sender argument.</param>
+  /// <param name="e">The arguments about the properties that changed.</param>
+  private void OnSkipTtsKeybindChanged(object? _, PropertyChangedEventArgs e) {
+    if (!nameof(SkipTtsKeyBinding.Keybind).Equals(e.PropertyName)) {
       return;
     }
 
-    _configuration.SkipTtsKey = _skipTtsKeyBinding.Keybind;
+    _configuration.SkipTtsKey = SkipTtsKeyBinding.Keybind;
     _configuration.WriteConfiguration();
   }
 
   /// <summary>
   ///   Handles updating the configuration when the skip all TTS keybind changes.
   /// </summary>
-  /// <param name="args">The arguments about the properties that changed.</param>
-  private void OnSkipAllTtsKeybindChanged(IReactivePropertyChangedEventArgs<IReactiveObject> args) {
-    if (!nameof(_skipAllTtsKeyBinding.Keybind).Equals(args.PropertyName)) {
+  /// <param name="_">Unused sender argument.</param>
+  /// <param name="e">The arguments about the properties that changed.</param>
+  private void OnSkipAllTtsKeybindChanged(object? _, PropertyChangedEventArgs e) {
+    if (!nameof(SkipAllTtsKeyBinding.Keybind).Equals(e.PropertyName)) {
       return;
     }
 
-    _configuration.SkipAllTtsKey = _skipAllTtsKeyBinding.Keybind;
+    _configuration.SkipAllTtsKey = SkipAllTtsKeyBinding.Keybind;
     _configuration.WriteConfiguration();
   }
 }

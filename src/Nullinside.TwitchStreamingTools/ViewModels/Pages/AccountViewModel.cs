@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 
 using Avalonia.Media.Imaging;
 
+using CommunityToolkit.Mvvm.ComponentModel;
+
 using log4net;
 
 using Newtonsoft.Json;
@@ -28,7 +30,7 @@ namespace Nullinside.TwitchStreamingTools.ViewModels.Pages;
 /// <summary>
 ///   Handles binding your account to the application.
 /// </summary>
-public class AccountViewModel : PageViewModelBase, IDisposable {
+public partial class AccountViewModel : PageViewModelBase, IDisposable {
   /// <summary>
   ///   The path to the folder containing cached profile images.
   /// </summary>
@@ -58,27 +60,27 @@ public class AccountViewModel : PageViewModelBase, IDisposable {
   /// <summary>
   ///   True if currently downloading the logged in user's profile photo, false otherwise.
   /// </summary>
-  private bool _downloadingProfileImage;
+  [ObservableProperty] private bool _downloadingProfileImage;
 
   /// <summary>
   ///   True if we have a valid OAuth token, false otherwise.
   /// </summary>
-  private bool _hasValidOAuthToken;
+  [ObservableProperty] private bool _hasValidOAuthToken;
 
   /// <summary>
   ///   True if currently in the logging in process, false otherwise.
   /// </summary>
-  private bool _loggingIn;
+  [ObservableProperty] private bool _loggingIn;
 
   /// <summary>
   ///   The profile image of the logged in user.
   /// </summary>
-  private Bitmap? _profileImage;
+  [ObservableProperty] private Bitmap? _profileImage;
 
   /// <summary>
   ///   The authenticated user's twitch username.
   /// </summary>
-  private string? _twitchUsername;
+  [ObservableProperty] private string? _twitchUsername;
 
   /// <summary>
   ///   Initializes a new instance of the <see cref="AccountViewModel" /> class.
@@ -98,14 +100,6 @@ public class AccountViewModel : PageViewModelBase, IDisposable {
     TwitchUsername = _twitchAccountService.TwitchUsername;
   }
 
-  /// <summary>
-  ///   The profile image of the logged in user.
-  /// </summary>
-  public Bitmap? ProfileImage {
-    get => _profileImage;
-    set => this.RaiseAndSetIfChanged(ref _profileImage, value);
-  }
-
   /// <inheritdoc />
   public override string IconResourceKey { get; } = "InprivateAccountRegular";
 
@@ -118,38 +112,6 @@ public class AccountViewModel : PageViewModelBase, IDisposable {
   ///   Called when logging out the current user.
   /// </summary>
   public ReactiveCommand<Unit, Unit> OnLogout { get; }
-
-  /// <summary>
-  ///   True if currently in the logging in process, false otherwise.
-  /// </summary>
-  public bool LoggingIn {
-    get => _loggingIn;
-    set => this.RaiseAndSetIfChanged(ref _loggingIn, value);
-  }
-
-  /// <summary>
-  ///   True if currently downloading the logged in user's profile photo, false otherwise.
-  /// </summary>
-  public bool DownloadingProfileImage {
-    get => _downloadingProfileImage;
-    set => this.RaiseAndSetIfChanged(ref _downloadingProfileImage, value);
-  }
-
-  /// <summary>
-  ///   True if we have a valid OAuth token, false otherwise.
-  /// </summary>
-  public bool HasValidOAuthToken {
-    get => _hasValidOAuthToken;
-    set => this.RaiseAndSetIfChanged(ref _hasValidOAuthToken, value);
-  }
-
-  /// <summary>
-  ///   The authenticated user's twitch username.
-  /// </summary>
-  public string? TwitchUsername {
-    get => _twitchUsername;
-    set => this.RaiseAndSetIfChanged(ref _twitchUsername, value);
-  }
 
   /// <summary>
   ///   The application version number.
