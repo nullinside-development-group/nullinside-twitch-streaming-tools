@@ -6,11 +6,11 @@ FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
 ARG TAG_VERSION
 WORKDIR /src
-COPY ["src/TwitchStreamingTools/TwitchStreamingTools.csproj", "src/TwitchStreamingTools/"]
-RUN dotnet restore "src/TwitchStreamingTools/TwitchStreamingTools.csproj"
+COPY ["src/Nullinside.TwitchStreamingTools/Nullinside.TwitchStreamingTools.csproj", "src/TwitchStreamingTools/"]
+RUN dotnet restore "src/Nullinside.TwitchStreamingTools/Nullinside.TwitchStreamingTools.csproj"
 COPY src/ .
-WORKDIR "/src/TwitchStreamingTools"
-RUN dotnet build "TwitchStreamingTools.csproj" -p:Version="$TAG_VERSION" -c $BUILD_CONFIGURATION -o /app/build
+WORKDIR "/src/Nullinside.TwitchStreamingTools"
+RUN dotnet build "Nullinside.TwitchStreamingTools.csproj" -p:Version="$TAG_VERSION" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
@@ -20,7 +20,7 @@ ARG DESCRIPTION
 RUN apt-get update && apt-get dist-upgrade -y && apt-get install zip jq -y
 
 # Generate the executables
-RUN dotnet publish "TwitchStreamingTools.csproj" -p:Version="$TAG_VERSION" -c $BUILD_CONFIGURATION -o /app/publish/win-x64 -r win-x64 -p:PublishSingleFile=True -p:PublishReadyToRun=True --self-contained
+RUN dotnet publish "Nullinside.TwitchStreamingTools.csproj" -p:Version="$TAG_VERSION" -c $BUILD_CONFIGURATION -o /app/publish/win-x64 -r win-x64 -p:PublishSingleFile=True -p:PublishReadyToRun=True --self-contained
 RUN cd /app/publish/win-x64 && zip -r ../twitch-streaming-tools.zip *
 
 # Create a tag and associate it with a release in GitHub. We don't need to check if it already exist, if it already
