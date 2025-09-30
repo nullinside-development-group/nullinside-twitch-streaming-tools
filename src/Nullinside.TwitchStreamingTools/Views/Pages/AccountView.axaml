@@ -1,0 +1,59 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:controls="clr-namespace:TwitchStreamingTools.Controls"
+             xmlns:pages="clr-namespace:Nullinside.TwitchStreamingTools.ViewModels.Pages"
+             xmlns:controls1="clr-namespace:Nullinside.TwitchStreamingTools.Controls"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="Nullinside.TwitchStreamingTools.Views.Pages.AccountView"
+             x:DataType="pages:AccountViewModel">
+
+    <Design.DataContext>
+        <pages:AccountViewModel />
+    </Design.DataContext>
+
+    <DockPanel HorizontalAlignment="Stretch"
+               VerticalAlignment="Stretch"
+               Name="ContentWrapper">
+        <Label HorizontalAlignment="Right"
+               VerticalAlignment="Top"
+               DockPanel.Dock="Top"
+               Content="{Binding Version, StringFormat='Version: {0}'}" />
+        <StackPanel Orientation="Vertical"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    DockPanel.Dock="Top"
+                    Spacing="15">
+            <Image Width="200" Source="/Assets/twitch-wordart.png" />
+            <controls1:Loading IsVisible="{Binding LoggingIn}" Width="75" Height="75" />
+            <Button IsVisible="{Binding !HasValidOAuthToken}"
+                    IsEnabled="{Binding !LoggingIn}"
+                    Command="{Binding OnPerformLogin}"
+                    HorizontalAlignment="Center"
+                    VerticalContentAlignment="Top">
+                Login
+            </Button>
+            <StackPanel IsVisible="{Binding HasValidOAuthToken}" Spacing="5">
+                <controls1:Loading IsVisible="{Binding DownloadingProfileImage}" Width="75" Height="75" />
+                <Border CornerRadius="75" Width="150" ClipToBounds="True"
+                        IsVisible="{Binding !DownloadingProfileImage}">
+                    <Image Source="{Binding ProfileImage}" />
+                </Border>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" VerticalAlignment="Center" Margin="0 0 10 0">User:</TextBlock>
+                    <TextBox Grid.Column="1" Text="{Binding TwitchUsername}" IsReadOnly="True" />
+                </Grid>
+                <Button Command="{Binding OnLogout}"
+                        HorizontalAlignment="Center"
+                        VerticalContentAlignment="Top">
+                    Logout
+                </Button>
+            </StackPanel>
+        </StackPanel>
+    </DockPanel>
+</UserControl>

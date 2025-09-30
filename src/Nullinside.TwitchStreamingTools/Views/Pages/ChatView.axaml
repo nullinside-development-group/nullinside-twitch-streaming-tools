@@ -1,0 +1,68 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:system="clr-namespace:System;assembly=System.Runtime"
+             xmlns:chatView="clr-namespace:Nullinside.TwitchStreamingTools.ViewModels.Pages"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="Nullinside.TwitchStreamingTools.Views.Pages.ChatView"
+             x:DataType="chatView:ChatViewModel">
+    <Design.DataContext>
+        <chatView:ChatViewModel />
+    </Design.DataContext>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="200" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Margin="0 0 0 10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" VerticalAlignment="Center" Margin="0 0 5 0">Twitch Channel:</TextBlock>
+            <TextBox Grid.Column="1" Text="{Binding TwitchChatName}" Margin="0 0 5 0" />
+            <Button Grid.Column="2" IsDefault="True" Command="{Binding OnAddChat}" Content="Add" />
+        </Grid>
+
+        <Label Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center">Twitch Channels</Label>
+        <Label Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center">Chat Log</Label>
+        <ListBox Grid.Row="2" Grid.Column="0" ItemsSource="{Binding ChatItems}" Margin="0 0 10 0">
+            <ListBox.ItemTemplate>
+                <DataTemplate DataType="{x:Type system:String}">
+                    <Grid Margin="0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Text="{Binding }" Padding="0" />
+                        <Button Grid.Column="1"
+                                FontWeight="Bold"
+                                Command="{Binding $parent[UserControl].((chatView:ChatViewModel)DataContext).OnRemoveChat, FallbackValue=null}"
+                                CommandParameter="{Binding }">
+                            <Button.Styles>
+                                <Style Selector="Button">
+                                    <Setter Property="Background" Value="#643332" />
+                                </Style>
+                                <Style Selector="Button:pointerover /template/ ContentPresenter">
+                                    <Setter Property="Background" Value="#963332" />
+                                </Style>
+                            </Button.Styles>
+                            <PathIcon Padding="0"
+                                      Data="{Binding $parent[UserControl].((chatView:ChatViewModel)DataContext).DeleteIcon, FallbackValue=null}" />
+                        </Button>
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+        <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding TwitchChat}"
+                 CaretIndex="{Binding TextBoxCursorPosition, Mode=TwoWay}" IsReadOnly="True" />
+    </Grid>
+</UserControl>

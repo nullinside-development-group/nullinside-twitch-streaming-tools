@@ -1,0 +1,58 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:controls="clr-namespace:TwitchStreamingTools.Controls"
+        xmlns:viewModels="clr-namespace:Nullinside.TwitchStreamingTools.ViewModels"
+        xmlns:controls1="clr-namespace:Nullinside.TwitchStreamingTools.Controls"
+        x:Name="Window"
+        mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="450"
+        x:Class="Nullinside.TwitchStreamingTools.Views.NewVersionWindow"
+        x:DataType="viewModels:NewVersionWindowViewModel"
+        WindowStartupLocation="CenterOwner"
+        SizeToContent="WidthAndHeight"
+        Icon="/Assets/update.png"
+        Title="New Version Available"
+        Background="rgb(26, 24, 23)">
+    <Design.DataContext>
+        <viewModels:NewVersionWindowViewModel />
+    </Design.DataContext>
+
+    <DockPanel HorizontalAlignment="Stretch"
+               VerticalAlignment="Stretch"
+               Name="ContentWrapper">
+        <StackPanel>
+            <!-- The normal panel -->
+            <StackPanel Margin="10" IsVisible="{Binding !IsUpdating}">
+                <TextBlock TextWrapping="Wrap" Margin="0 0 0 10">There is a new version of the software available, would you like to download it?</TextBlock>
+                <StackPanel Orientation="Horizontal">
+                    <Label>App Version: </Label>
+                    <TextBlock Text="{Binding LocalVersion}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Label>Server Version: </Label>
+                    <TextBlock Text="{Binding ServerVersion}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Button Command="{Binding UpdateSoftware}" Margin="0 10 0 0">Install New Version</Button>
+                    <Button Command="{Binding CloseWindow}" CommandParameter="{Binding ElementName=Window}"
+                            Margin="10 10 0 0">
+                        Close
+                    </Button>
+                </StackPanel>
+            </StackPanel>
+
+            <!-- The waiting to update display -->
+            <StackPanel IsVisible="{Binding IsUpdating}">
+                <Label HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       FontSize="32"
+                       FontWeight="Bold"
+                       Foreground="rgb(204, 200, 175)">
+                    Updating
+                </Label>
+                <controls1:Loading Width="100" Height="100" />
+            </StackPanel>
+        </StackPanel>
+    </DockPanel>
+</Window>
