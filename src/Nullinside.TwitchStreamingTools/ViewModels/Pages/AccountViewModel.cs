@@ -18,7 +18,6 @@ using Newtonsoft.Json;
 using Nullinside.Api.Common;
 using Nullinside.Api.Common.Auth;
 using Nullinside.Api.Common.Extensions;
-using Nullinside.Api.Common.Twitch;
 using Nullinside.TwitchStreamingTools.Services;
 using Nullinside.TwitchStreamingTools.Utilities;
 
@@ -128,6 +127,7 @@ public partial class AccountViewModel : PageViewModelBase {
     profileImagePath = Path.Combine(PROFILE_IMAGE_FOLDER, profileImagePath);
     if (File.Exists(profileImagePath)) {
       ProfileImage = new Bitmap(profileImagePath);
+      DownloadingProfileImage = false;
       return;
     }
 
