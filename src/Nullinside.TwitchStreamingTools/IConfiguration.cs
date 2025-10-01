@@ -12,6 +12,16 @@ namespace Nullinside.TwitchStreamingTools;
 /// </summary>
 public interface IConfiguration {
   /// <summary>
+  ///   The obs websocket server address.
+  /// </summary>
+  string? ObsServerAddress { get; set; }
+
+  /// <summary>
+  ///   The obs websocket server password.
+  /// </summary>
+  string? ObsServerPassword { get; set; }
+
+  /// <summary>
   ///   The username of the user logged in through the <see cref="OAuth" /> token.
   /// </summary>
   string? TwitchUsername { get; set; }

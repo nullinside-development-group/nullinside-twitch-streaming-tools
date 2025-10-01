@@ -39,6 +39,7 @@ public static class ServiceCollectionExtensions {
     collection.AddTransient<SettingsViewModel>();
     collection.AddTransient<TtsPhoneticWordsViewModel>();
     collection.AddTransient<TtsSkipUsernamesViewModel>();
+    collection.AddTransient<ObsViewModel>();
     collection.AddTransient<KeybindViewModel>();
   }
 

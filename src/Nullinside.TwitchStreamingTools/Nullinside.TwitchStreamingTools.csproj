@@ -107,5 +107,9 @@
             <DependentUpon>SettingsView.axaml</DependentUpon>
             <SubType>Code</SubType>
         </Compile>
+        <Compile Update="Views\Pages\ObsView.axaml.cs">
+            <DependentUpon>ObsView.axaml</DependentUpon>
+            <SubType>Code</SubType>
+        </Compile>
     </ItemGroup>
 </Project>

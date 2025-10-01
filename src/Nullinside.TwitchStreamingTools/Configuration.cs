@@ -48,6 +48,12 @@ public class Configuration : IConfiguration {
     }
   }
 
+  /// <inheritdoc />
+  public string? ObsServerAddress { get; set; }
+  
+  /// <inheritdoc />
+  public string? ObsServerPassword { get; set; }
+
   /// <summary>
   ///   The username of the user logged in through the <see cref="OAuth" /> token.
   /// </summary>
