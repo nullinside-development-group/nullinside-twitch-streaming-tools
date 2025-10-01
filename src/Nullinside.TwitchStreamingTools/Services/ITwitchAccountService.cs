@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 
 using Nullinside.Api.Common.Auth;
-using Nullinside.Api.Common.Twitch;
 
 namespace Nullinside.TwitchStreamingTools.Services;
 
