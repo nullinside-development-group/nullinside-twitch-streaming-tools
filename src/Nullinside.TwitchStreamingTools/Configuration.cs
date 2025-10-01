@@ -50,7 +50,7 @@ public class Configuration : IConfiguration {
 
   /// <inheritdoc />
   public string? ObsServerAddress { get; set; }
-  
+
   /// <inheritdoc />
   public string? ObsServerPassword { get; set; }
 

@@ -66,6 +66,7 @@
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.9"/>
         <PackageReference Include="NAudio.Wasapi" Version="2.2.1"/>
         <PackageReference Include="NAudio.WinMM" Version="2.2.1"/>
+        <PackageReference Include="obs-websocket-dotnet" Version="5.0.1"/>
         <PackageReference Include="PInvoke.User32" Version="0.7.124"/>
         <PackageReference Include="System.Speech" Version="9.0.9"/>
     </ItemGroup>

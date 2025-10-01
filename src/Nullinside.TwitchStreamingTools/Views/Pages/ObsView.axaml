@@ -14,16 +14,16 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <Label Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right">Obs Server Address:</Label>
-        <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding ObsServerAddress}"/>
-        
+        <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding ObsServerAddress}" />
+
         <Label Grid.Row="1" Grid.Column="0" HorizontalAlignment="Right">Obs Server Password:</Label>
-        <TextBox Grid.Row="1" Grid.Column="1" PasswordChar="*" Text="{Binding ObsServerPassword}"/>
+        <TextBox Grid.Row="1" Grid.Column="1" PasswordChar="*" Text="{Binding ObsServerPassword}" />
     </Grid>
 </UserControl>
