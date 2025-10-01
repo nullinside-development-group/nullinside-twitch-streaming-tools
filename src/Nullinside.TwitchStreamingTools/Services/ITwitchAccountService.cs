@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
+using Nullinside.Api.Common.Auth;
 using Nullinside.Api.Common.Twitch;
 
 namespace Nullinside.TwitchStreamingTools.Services;
@@ -27,7 +28,7 @@ public interface ITwitchAccountService {
   /// <summary>
   ///   An event indicating that the credentials have changed.
   /// </summary>
-  Action<TwitchAccessToken?>? OnCredentialsChanged { get; set; }
+  Action<OAuthToken?>? OnCredentialsChanged { get; set; }
 
   /// <summary>
   ///   Updates the credentials.

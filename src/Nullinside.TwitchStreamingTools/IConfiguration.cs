@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 
+using Nullinside.Api.Common.Auth;
 using Nullinside.Api.Common.Twitch;
 using Nullinside.TwitchStreamingTools.Controls.ViewModels;
 using Nullinside.TwitchStreamingTools.Models;
@@ -18,7 +19,7 @@ public interface IConfiguration {
   /// <summary>
   ///   The twitch OAuth token.
   /// </summary>
-  TwitchAccessToken? OAuth { get; set; }
+  OAuthToken? OAuth { get; set; }
 
   /// <summary>
   ///   The twitch application configuration for getting OAuth tokens.

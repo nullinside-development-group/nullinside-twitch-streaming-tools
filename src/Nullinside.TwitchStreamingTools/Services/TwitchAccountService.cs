@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 
 using Avalonia.Threading;
 
+using Nullinside.Api.Common.Auth;
 using Nullinside.Api.Common.Twitch;
 using Nullinside.TwitchStreamingTools.Utilities;
 
@@ -55,11 +56,11 @@ public class TwitchAccountService : ITwitchAccountService {
   public Action<bool>? OnCredentialsStatusChanged { get; set; }
 
   /// <inheritdoc />
-  public Action<TwitchAccessToken?>? OnCredentialsChanged { get; set; }
+  public Action<OAuthToken?>? OnCredentialsChanged { get; set; }
 
   /// <inheritdoc />
   public async Task UpdateCredentials(string bearer, string refresh, DateTime expires) {
-    var oauth = new TwitchAccessToken {
+    var oauth = new OAuthToken {
       AccessToken = bearer,
       RefreshToken = refresh,
       ExpiresUtc = expires
@@ -159,7 +160,7 @@ public class TwitchAccountService : ITwitchAccountService {
     await twitchApi.RefreshAccessToken().ConfigureAwait(false);
 
     // Update the configuration
-    _configuration.OAuth = new TwitchAccessToken {
+    _configuration.OAuth = new OAuthToken {
       AccessToken = twitchApi.OAuth.AccessToken,
       RefreshToken = twitchApi.OAuth.RefreshToken,
       ExpiresUtc = twitchApi.OAuth.ExpiresUtc ?? DateTime.MinValue

@@ -16,6 +16,7 @@ using log4net;
 using Newtonsoft.Json;
 
 using Nullinside.Api.Common;
+using Nullinside.Api.Common.Auth;
 using Nullinside.Api.Common.Extensions;
 using Nullinside.Api.Common.Twitch;
 using Nullinside.TwitchStreamingTools.Services;
@@ -145,7 +146,7 @@ public partial class AccountViewModel : PageViewModelBase {
   ///   Called when the credentials are changed to load the new profile image.
   /// </summary>
   /// <param name="token"></param>
-  private async void OnCredentialsChanged(TwitchAccessToken? token) {
+  private async void OnCredentialsChanged(OAuthToken? token) {
     try {
       if (string.IsNullOrWhiteSpace(token?.AccessToken)) {
         ProfileImage = null;
@@ -213,7 +214,7 @@ public partial class AccountViewModel : PageViewModelBase {
       await webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "Completed Successfully!", token).ConfigureAwait(false);
 
       // Update the oauth token in the twitch account service. 
-      var oauthResp = JsonConvert.DeserializeObject<TwitchAccessToken>(json);
+      var oauthResp = JsonConvert.DeserializeObject<OAuthToken>(json);
       if (null == oauthResp || null == oauthResp.AccessToken || null == oauthResp.RefreshToken || null == oauthResp.ExpiresUtc) {
         _logger.Error($"Failed to get a valid oauth token, got: {json}");
         return;
