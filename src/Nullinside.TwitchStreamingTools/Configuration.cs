@@ -7,6 +7,7 @@ using Avalonia.Controls;
 
 using Newtonsoft.Json;
 
+using Nullinside.Api.Common.Auth;
 using Nullinside.Api.Common.Twitch;
 using Nullinside.TwitchStreamingTools.Controls.ViewModels;
 using Nullinside.TwitchStreamingTools.Models;
@@ -55,7 +56,7 @@ public class Configuration : IConfiguration {
   /// <summary>
   ///   The twitch OAuth token.
   /// </summary>
-  public TwitchAccessToken? OAuth { get; set; }
+  public OAuthToken? OAuth { get; set; }
 
   /// <summary>
   ///   The twitch application configuration for getting OAuth tokens.
