@@ -20,10 +20,25 @@
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-        <Label Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right">Obs Server Address:</Label>
+        <Label Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Right">Obs Server Address:</Label>
         <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding ObsServerAddress}" />
 
-        <Label Grid.Row="1" Grid.Column="0" HorizontalAlignment="Right">Obs Server Password:</Label>
+        <Label Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Right">Obs Server Password:</Label>
         <TextBox Grid.Row="1" Grid.Column="1" PasswordChar="*" Text="{Binding ObsServerPassword}" />
+        
+        <ListBox Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" ItemsSource="{Binding InputVolumes}" Margin="0 0 10 0">
+            <ListBox.ItemTemplate>
+                <DataTemplate DataType="{x:Type pages:ObsAudioInput}">
+                    <Grid Margin="0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Label HorizontalAlignment="Right" VerticalAlignment="Center" Content="{Binding Name}" />
+                        <Slider Grid.Column="1" Minimum="0" Maximum="1" Value="{Binding Volume}" />
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
     </Grid>
 </UserControl>

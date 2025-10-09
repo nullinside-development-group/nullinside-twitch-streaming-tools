@@ -1,5 +1,11 @@
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
+
+using Avalonia.Collections;
+using Avalonia.Input;
 
 using CommunityToolkit.Mvvm.ComponentModel;
 
@@ -7,6 +13,7 @@ using log4net;
 
 using OBSWebsocketDotNet;
 using OBSWebsocketDotNet.Communication;
+using OBSWebsocketDotNet.Types;
 
 namespace Nullinside.TwitchStreamingTools.ViewModels.Pages;
 
@@ -43,6 +50,11 @@ public partial class ObsViewModel : PageViewModelBase {
   ///   The obs websocket server password.
   /// </summary>
   [ObservableProperty] private string? _obsServerPassword;
+  
+  /// <summary>
+  /// The list of inputs with volumes.
+  /// </summary>
+  [ObservableProperty] private ObservableCollection<ObsAudioInput> _inputVolumes = new();
 
   /// <summary>
   ///   Initializes a new instance of the <see cref="ObsViewModel" /> class.
@@ -105,6 +117,19 @@ public partial class ObsViewModel : PageViewModelBase {
   private void ObsOnConnected(object? _, EventArgs e) {
     IsConnected = true;
     _logger.Info($"Connected: {ObsServerAddress}");
+
+    var inputsWithAudio = new Dictionary<string, float>();
+    var inputList = _obs.GetInputList();
+    foreach (var item in inputList) {
+      try {
+        inputsWithAudio[item.InputName] = _obs.GetInputVolume(item.InputName).VolumeMul;
+      }
+      catch (ErrorResponseException) {
+        // Do nothing, this is just a way to filter the input list to only things that have audio.
+      }
+    }
+    
+    InputVolumes = new ObservableCollection<ObsAudioInput>(inputsWithAudio.Select(i => new ObsAudioInput { Name = i.Key, Volume = i.Value }));
   }
 
   /// <summary>
