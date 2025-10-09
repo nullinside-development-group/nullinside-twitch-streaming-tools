@@ -9,14 +9,15 @@
         <Version>1.0.0</Version>
         <PackageProjectUrl>https://nullinside.com</PackageProjectUrl>
         <PackageIcon>Assets\icon.png</PackageIcon>
-        <RepositoryUrl>https://github.com/nullinside-development-group/twitch-streaming-tools</RepositoryUrl>
+        <RepositoryUrl>https://github.com/nullinside-development-group/nullinside-twitch-streaming-tools</RepositoryUrl>
         <ApplicationIcon>Assets\logo.ico</ApplicationIcon>
         <LangVersion>default</LangVersion>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-        <AssemblyName>Nullinside.TwitchStreamingTools</AssemblyName>
+        <AssemblyName>TwitchStreamingTools</AssemblyName>
         <RootNamespace>Nullinside.TwitchStreamingTools</RootNamespace>
-        <Company/>
-        <Product/>
+        <Company>Nullinside</Company>
+        <Product>TwitchStreamingTools</Product>
+        <Authors>Nullinside</Authors>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
         <DocumentationFile>bin\Debug\TwitchStreamingTools.xml</DocumentationFile>
