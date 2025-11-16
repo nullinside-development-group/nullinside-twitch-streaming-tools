@@ -164,8 +164,7 @@ public partial class SettingsViewModel : PageViewModelBase {
 
     // Get the list of TTS voices and set the default to either what we have in the configuration or the system 
     // default whichever is more appropriate.
-    using var speech = new SpeechSynthesizer();
-    _ttsVoices = new ObservableCollection<string>(speech.GetInstalledVoices().Select(v => v.VoiceInfo.Name));
+    _ttsVoices = new ObservableCollection<string>(GetFilteredTtsVoices());
     _selectedTtsVoice = Configuration.GetDefaultTtsVoice();
 
     // Get the volume and set the default to either what we have in the configuration or to half-volume. Why half-volume?
@@ -362,6 +361,45 @@ public partial class SettingsViewModel : PageViewModelBase {
       _configuration.SayUsernameWithMessage = value;
       _configuration.WriteConfiguration();
     }
+  }
+
+  /// <summary>
+  ///   Gets the filtered list of voices, removing duplicates.
+  /// </summary>
+  /// <returns>The list of voice names.</returns>
+  private IEnumerable<string> GetFilteredTtsVoices() {
+    const string duplicatePostfix = " Desktop";
+    using var speech = new SpeechSynthesizer();
+    IEnumerable<string> allVoices = speech.GetInstalledVoices().Select(v => v.VoiceInfo.Name);
+    var unique = new HashSet<string>();
+    foreach (string voice in allVoices) {
+      // If the voice ends in the " Desktop" it means there could be a duplicate voice without that on the end
+      // e.g:
+      // Microsoft David Desktop
+      // vs
+      // Microsoft David
+      // 
+      // These both point to the same thing and we only need one of them. The tricky part is we can't be sure which one
+      // we will encounter so we have to check if the other exists and make sure only one of the two end up in the list.
+      if (voice.EndsWith(duplicatePostfix)) {
+        // If a " Desktop" voice has a voice without it in the list already, then don't add it. Skip this one.
+        if (unique.Contains(voice.Substring(0, voice.Length - duplicatePostfix.Length))) {
+          continue;
+        }
+      }
+      else {
+        // If it's not a desktop voice, check if this voice has another voice already with the " Desktop" on the end.
+        // If we find it, remove it and add this one instead.
+        if (unique.Contains(voice +  duplicatePostfix)) {
+          unique.Remove(voice + duplicatePostfix);
+        }
+      }
+      
+      unique.Add(voice);
+    }
+
+    // Sort them to be nice.
+    return unique.OrderByDescending(s => s);
   }
 
   /// <summary>
