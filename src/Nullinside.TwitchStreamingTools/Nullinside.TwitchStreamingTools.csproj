@@ -64,11 +64,11 @@
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0"/>
         <PackageReference Include="DynamicData" Version="9.4.1"/>
         <PackageReference Include="log4net" Version="3.2.0"/>
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.0" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.1" />
         <PackageReference Include="NAudio.Wasapi" Version="2.2.1"/>
         <PackageReference Include="NAudio.WinMM" Version="2.2.1"/>
         <PackageReference Include="PInvoke.User32" Version="0.7.124"/>
-        <PackageReference Include="System.Speech" Version="10.0.0" />
+        <PackageReference Include="System.Speech" Version="10.0.1" />
     </ItemGroup>
 
     <ItemGroup>
