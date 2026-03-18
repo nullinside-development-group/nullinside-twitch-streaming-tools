@@ -61,14 +61,14 @@
         <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
         <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.3.12" />
         <PackageReference Include="Avalonia.ReactiveUI" Version="11.3.8" />
-        <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0"/>
-        <PackageReference Include="DynamicData" Version="9.4.1"/>
+        <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.1" />
+        <PackageReference Include="DynamicData" Version="9.4.31" />
         <PackageReference Include="log4net" Version="3.3.0" />
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.3" />
-        <PackageReference Include="NAudio.Wasapi" Version="2.2.1"/>
-        <PackageReference Include="NAudio.WinMM" Version="2.2.1"/>
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.5" />
+        <PackageReference Include="NAudio.Wasapi" Version="2.3.0" />
+        <PackageReference Include="NAudio.WinMM" Version="2.3.0" />
         <PackageReference Include="PInvoke.User32" Version="0.7.124"/>
-        <PackageReference Include="System.Speech" Version="10.0.3" />
+        <PackageReference Include="System.Speech" Version="10.0.5" />
     </ItemGroup>
 
     <ItemGroup>
