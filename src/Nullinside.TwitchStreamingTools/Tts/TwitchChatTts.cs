@@ -36,7 +36,7 @@ public class TwitchChatTts : IDisposable, ITwitchChatTts {
   /// <summary>
   ///   The ordered list of chat messages to play.
   /// </summary>
-  private readonly BlockingCollection<OnMessageReceivedArgs> _soundsToPlay;
+  private readonly BlockingCollection<Api.Common.Twitch.Support.TwitchChatMessage> _soundsToPlay;
 
   /// <summary>
   ///   The thread to play sounds on.
@@ -96,7 +96,7 @@ public class TwitchChatTts : IDisposable, ITwitchChatTts {
     _configuration = configuration;
     _twitchClient = twitchClient;
     ChatConfig = config;
-    _soundsToPlay = new BlockingCollection<OnMessageReceivedArgs>();
+    _soundsToPlay = new BlockingCollection<Api.Common.Twitch.Support.TwitchChatMessage>();
     _soundThread = new Thread(PlaySoundsThread) {
       Name = "TwitchChatTts Thread",
       IsBackground = true
@@ -113,7 +113,7 @@ public class TwitchChatTts : IDisposable, ITwitchChatTts {
     }
 
     _poisonPill = true;
-    _soundsToPlay.Add(new OnMessageReceivedArgs());
+    _soundsToPlay.Add(new Api.Common.Twitch.Support.TwitchChatMessage());
 
     lock (_ttsSoundOutputLock) {
       _ttsSoundOutputSignal?.Set();
@@ -195,7 +195,7 @@ public class TwitchChatTts : IDisposable, ITwitchChatTts {
     while (!_poisonPill) {
       try {
         // Loop through each chat message we've received from the twitch chat client.
-        foreach (OnMessageReceivedArgs e in _soundsToPlay.GetConsumingEnumerable()) {
+        foreach (Api.Common.Twitch.Support.TwitchChatMessage e in _soundsToPlay.GetConsumingEnumerable()) {
           if (_poisonPill) {
             return;
           }
@@ -203,12 +203,12 @@ public class TwitchChatTts : IDisposable, ITwitchChatTts {
           // If we are currently skipping messages, skip them and decrement the skipper.
           if (_messageToSkip > 0) {
             --_messageToSkip;
-            LOG.Debug($"Skipping: {e.ChatMessage.Username} says {e.ChatMessage.Message}");
+            LOG.Debug($"Skipping: {e.Username} says {e.Message}");
             continue;
           }
 
           // Debug
-          LOG.Debug($"Running: {e.ChatMessage.Username} says {e.ChatMessage.Message}");
+          LOG.Debug($"Running: {e.Username} says {e.Message}");
 
           // Go through the TTS filters which modify the chat message before it is passed to TTS.
           Tuple<string, string> convertedChatEvent = ConvertChatMessage(e);
@@ -225,7 +225,7 @@ public class TwitchChatTts : IDisposable, ITwitchChatTts {
           }
 
           // Converts the text to an audio stream and plays it.
-          InitializeAndPlayTts(e.ChatMessage.Username, chatMessage);
+          InitializeAndPlayTts(e.Username, chatMessage);
         }
       }
       catch (Exception ex) {
@@ -344,8 +344,8 @@ public class TwitchChatTts : IDisposable, ITwitchChatTts {
   /// </summary>
   /// <param name="chatEvent">The twitch chat event.</param>
   /// <returns>A tuple where Item1 is the login of the sender and Item2 is the message the user sent.</returns>
-  private Tuple<string, string> ConvertChatMessage(OnMessageReceivedArgs chatEvent) {
-    var chatMessageInfo = new Tuple<string, string>(chatEvent.ChatMessage.DisplayName, chatEvent.ChatMessage.Message);
+  private Tuple<string, string> ConvertChatMessage(Api.Common.Twitch.Support.TwitchChatMessage chatEvent) {
+    var chatMessageInfo = new Tuple<string, string>(chatEvent.DisplayName, chatEvent.Message);
     foreach (ITtsFilter filter in _ttsFilters) {
       try {
         chatMessageInfo = filter.Filter(_configuration, chatEvent, chatMessageInfo.Item1, chatMessageInfo.Item2);
@@ -362,15 +362,15 @@ public class TwitchChatTts : IDisposable, ITwitchChatTts {
   /// <summary>
   ///   Event called when a message is received in twitch chat.
   /// </summary>
-  /// <param name="e">The chat message information.</param>
-  private void Client_OnMessageReceived(OnMessageReceivedArgs e) {
-    LOG.Debug($"Adding: {e.ChatMessage.Username} says {e.ChatMessage.Message}");
+  /// <param name="message">The chat message information.</param>
+  private void Client_OnMessageReceived(Api.Common.Twitch.Support.TwitchChatMessage message) {
+    LOG.Debug($"Adding: {message.Username} says {message.Message}");
     try {
-      _soundsToPlay.Add(e);
-      TwitchChatLog.AddMessage(new TwitchChatMessage(e.ChatMessage.Channel, e.ChatMessage.Username, e.ChatMessage.Message, e.GetTimestamp() ?? DateTime.UtcNow));
+      _soundsToPlay.Add(message);
+      TwitchChatLog.AddMessage(new TwitchChatMessage(message.Channel, message.Username, message.Message, message.Timestamp));
     }
     catch (Exception ex) {
-      LOG.Error($"Failed to add {e.ChatMessage.Username} says {e.ChatMessage.Message}", ex);
+      LOG.Error($"Failed to add {message.Username} says {message.Message}", ex);
     }
   }
 

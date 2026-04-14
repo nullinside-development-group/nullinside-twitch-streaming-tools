@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 
+using Nullinside.Api.Common.Twitch.Support;
+
 using TwitchLib.Client.Events;
 
 namespace Nullinside.TwitchStreamingTools.Tts.TtsFilter;
@@ -18,7 +20,7 @@ internal class PhoneticFilter : ITtsFilter {
   /// <param name="username">The username of the twitch chatter for TTS to say.</param>
   /// <param name="currentMessage">The message from twitch chat.</param>
   /// <returns>The new TTS message and username.</returns>
-  public Tuple<string, string> Filter(IConfiguration configuration, OnMessageReceivedArgs twitchInfo, string username, string currentMessage) {
+  public Tuple<string, string> Filter(IConfiguration configuration, TwitchChatMessage twitchInfo, string username, string currentMessage) {
     string message = currentMessage;
 
     if (null != configuration.TtsPhonetics) {
@@ -26,7 +28,7 @@ internal class PhoneticFilter : ITtsFilter {
         message = message.Replace(usernameToPhonetic.Key, usernameToPhonetic.Value, StringComparison.InvariantCultureIgnoreCase);
       }
 
-      KeyValuePair<string, string> foundUsername = configuration.TtsPhonetics.FirstOrDefault(k => twitchInfo.ChatMessage.DisplayName.Equals(k.Key, StringComparison.InvariantCultureIgnoreCase));
+      KeyValuePair<string, string> foundUsername = configuration.TtsPhonetics.FirstOrDefault(k => twitchInfo.DisplayName.Equals(k.Key, StringComparison.InvariantCultureIgnoreCase));
       if (!default(KeyValuePair<string, string>).Equals(foundUsername)) {
         username = foundUsername.Value;
       }

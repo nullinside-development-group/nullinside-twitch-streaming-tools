@@ -155,12 +155,12 @@ public partial class ChatViewModel : PageViewModelBase, IDisposable {
   ///   Handles a new chat message being received from <see cref="_twitchClient" />.
   /// </summary>
   /// <param name="msg">The message received.</param>
-  private void OnChatMessage(OnMessageReceivedArgs msg) {
+  private void OnChatMessage(Api.Common.Twitch.Support.TwitchChatMessage msg) {
     if (SelectedTwitchChatNames.Count > 1) {
-      TwitchChat = (TwitchChat + FormatChatMessage(msg.ChatMessage.Username, msg.ChatMessage.Message, msg.GetTimestamp() ?? DateTime.UtcNow, msg.ChatMessage.Channel)).Trim();
+      TwitchChat = (TwitchChat + FormatChatMessage(msg.Username, msg.Message, msg.Timestamp, msg.Channel)).Trim();
     }
     else {
-      TwitchChat = (TwitchChat + FormatChatMessage(msg.ChatMessage.Username, msg.ChatMessage.Message, msg.GetTimestamp() ?? DateTime.UtcNow)).Trim();
+      TwitchChat = (TwitchChat + FormatChatMessage(msg.Username, msg.Message, msg.Timestamp)).Trim();
     }
 
     TwitchChat += "\n";

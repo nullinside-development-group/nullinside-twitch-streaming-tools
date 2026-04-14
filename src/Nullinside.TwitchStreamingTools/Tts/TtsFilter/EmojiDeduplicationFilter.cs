@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
+using Nullinside.Api.Common.Twitch.Support;
 using Nullinside.TwitchStreamingTools.Utilities;
 
 using TwitchLib.Client.Events;
@@ -26,18 +27,18 @@ public class EmojiDeduplicationFilter : ITtsFilter {
   /// <param name="username">The username of the twitch chatter for TTS to say.</param>
   /// <param name="currentMessage">The message from twitch chat.</param>
   /// <returns>The new TTS message and username.</returns>
-  public Tuple<string, string> Filter(IConfiguration configuration, OnMessageReceivedArgs twitchInfo, string username, string currentMessage) {
+  public Tuple<string, string> Filter(IConfiguration configuration, TwitchChatMessage twitchInfo, string username, string currentMessage) {
     // The list of all recognized emotes.
     var emoteText = new HashSet<string>();
 
     // Get emotes from official twitch channel
-    twitchInfo.ChatMessage.EmoteSet.Emotes.Select(e => emoteText.Add(e.Name.ToLowerInvariant())).ToArray();
+    twitchInfo.Emotes.Select(e => emoteText.Add(e.Name.ToLowerInvariant())).ToArray();
 
     // BetterTTV emotes
-    EmoteLookup.GetBetterTtvEmotes(twitchInfo.ChatMessage.RoomId).Select(e => emoteText.Add(e.ToLowerInvariant())).ToArray();
+    EmoteLookup.GetBetterTtvEmotes(twitchInfo.ChannelId).Select(e => emoteText.Add(e.ToLowerInvariant())).ToArray();
 
     // FrankerzFace emotes
-    EmoteLookup.GetFrankerzFaceEmotes(twitchInfo.ChatMessage.Channel).Select(e => emoteText.Add(e.ToLowerInvariant())).ToArray();
+    EmoteLookup.GetFrankerzFaceEmotes(twitchInfo.Channel).Select(e => emoteText.Add(e.ToLowerInvariant())).ToArray();
 
     // Read emote only once
     var encounteredEmotes = new HashSet<string>();
