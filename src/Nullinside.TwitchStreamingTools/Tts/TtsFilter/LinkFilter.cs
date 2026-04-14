@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Text.RegularExpressions;
 
+using Nullinside.Api.Common.Twitch.Support;
+
 using TwitchLib.Client.Events;
 
 namespace Nullinside.TwitchStreamingTools.Tts.TtsFilter;
@@ -17,7 +19,7 @@ internal class LinkFilter : ITtsFilter {
   /// <param name="username">The username of the twitch chatter for TTS to say.</param>
   /// <param name="currentMessage">The message from twitch chat.</param>
   /// <returns>The new TTS message and username.</returns>
-  public Tuple<string, string> Filter(IConfiguration configuration, OnMessageReceivedArgs twitchInfo, string username, string currentMessage) {
+  public Tuple<string, string> Filter(IConfiguration configuration, TwitchChatMessage twitchInfo, string username, string currentMessage) {
     // Protect against removing ellipsis
     MatchCollection matches = Regex.Matches(currentMessage, Constants.REGEX_URL, RegexOptions.CultureInvariant);
     foreach (Match match in matches) {

@@ -1,5 +1,7 @@
 ﻿using System;
 
+using Nullinside.Api.Common.Twitch.Support;
+
 using TwitchLib.Client.Events;
 
 namespace Nullinside.TwitchStreamingTools.Tts.TtsFilter;
@@ -16,13 +18,13 @@ internal class UsernameSkipFilter : ITtsFilter {
   /// <param name="username">The username of the twitch chatter for TTS to say.</param>
   /// <param name="currentMessage">The message from twitch chat.</param>
   /// <returns>The new TTS message and username.</returns>
-  public Tuple<string, string> Filter(IConfiguration configuration, OnMessageReceivedArgs twitchInfo, string username, string currentMessage) {
+  public Tuple<string, string> Filter(IConfiguration configuration, TwitchChatMessage twitchInfo, string username, string currentMessage) {
     if (null == configuration.TtsUsernamesToSkip) {
       return new Tuple<string, string>(username, currentMessage);
     }
 
     foreach (string ignoredUser in configuration.TtsUsernamesToSkip) {
-      if (ignoredUser.Equals(twitchInfo.ChatMessage.DisplayName, StringComparison.InvariantCultureIgnoreCase)) {
+      if (ignoredUser.Equals(twitchInfo.DisplayName, StringComparison.InvariantCultureIgnoreCase)) {
         return new Tuple<string, string>("", "");
       }
     }
