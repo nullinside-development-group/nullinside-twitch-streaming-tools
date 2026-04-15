@@ -6,6 +6,7 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 using Nullinside.Api.Common.Twitch;
 using Nullinside.TwitchStreamingTools.ViewModels;
@@ -18,6 +19,11 @@ namespace Nullinside.TwitchStreamingTools;
 /// </summary>
 public class App : Application {
   /// <summary>
+  /// The debugging logger for the twitch client.
+  /// </summary>
+  private ILoggerFactory _loggerFactory;
+
+  /// <summary>
   ///   Initializes the GUI.
   /// </summary>
   public override void Initialize() {
@@ -28,7 +34,13 @@ public class App : Application {
   ///   Launches the main application window.
   /// </summary>
   public override void OnFrameworkInitializationCompleted() {
+    _loggerFactory = LoggerFactory.Create(c => c
+        .AddConsole()
+      //    .SetMinimumLevel(LogLevel.Trace) // uncomment to view raw messages received from twitch
+    );
+
     TwitchClientProxy.Instance.TwitchOAuthToken = Configuration.Instance.OAuth?.AccessToken;
+    TwitchClientProxy.Instance.TwitchUsername = Configuration.Instance.TwitchUsername;
     TwitchClientProxy.Instance.TwitchUsername = Configuration.Instance.TwitchUsername;
 
     // Register all the services needed for the application to run
