@@ -16,7 +16,7 @@ using Nullinside.Api.Common.Twitch;
 using Nullinside.TwitchStreamingTools.Models;
 using Nullinside.TwitchStreamingTools.Utilities;
 
-using TwitchLib.Client.Events;
+using TwitchChatMessage = Nullinside.Api.Common.Twitch.Support.TwitchChatMessage;
 
 namespace Nullinside.TwitchStreamingTools.ViewModels.Pages;
 
@@ -155,7 +155,7 @@ public partial class ChatViewModel : PageViewModelBase, IDisposable {
   ///   Handles a new chat message being received from <see cref="_twitchClient" />.
   /// </summary>
   /// <param name="msg">The message received.</param>
-  private void OnChatMessage(Api.Common.Twitch.Support.TwitchChatMessage msg) {
+  private void OnChatMessage(TwitchChatMessage msg) {
     if (SelectedTwitchChatNames.Count > 1) {
       TwitchChat = (TwitchChat + FormatChatMessage(msg.Username, msg.Message, msg.Timestamp, msg.Channel)).Trim();
     }
@@ -200,7 +200,7 @@ public partial class ChatViewModel : PageViewModelBase, IDisposable {
   /// </summary>
   private void PopulateChatHistory() {
     // Get the history of messages
-    IEnumerable<TwitchChatMessage> messages = _twitchChatLog.GetMessages();
+    IEnumerable<Models.TwitchChatMessage> messages = _twitchChatLog.GetMessages();
 
     // Convert them into a string
     var sb = new StringBuilder();

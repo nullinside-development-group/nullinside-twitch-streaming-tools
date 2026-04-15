@@ -329,7 +329,7 @@ public partial class SettingsViewModel : PageViewModelBase {
   /// <summary>
   ///   Called when the show advanced settings is clicked.
   /// </summary>
-  public ReactiveCommand<Unit, bool> ToggleAdvancedTtsCommand { protected set; get; }
+  public ReactiveCommand<Unit, bool> ToggleAdvancedTtsCommand { get; protected set; }
 
   /// <summary>
   ///   The speed to play the TTS
@@ -390,11 +390,11 @@ public partial class SettingsViewModel : PageViewModelBase {
       else {
         // If it's not a desktop voice, check if this voice has another voice already with the " Desktop" on the end.
         // If we find it, remove it and add this one instead.
-        if (unique.Contains(voice +  duplicatePostfix)) {
+        if (unique.Contains(voice + duplicatePostfix)) {
           unique.Remove(voice + duplicatePostfix);
         }
       }
-      
+
       unique.Add(voice);
     }
 

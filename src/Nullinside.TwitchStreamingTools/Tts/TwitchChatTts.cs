@@ -15,7 +15,7 @@ using Nullinside.TwitchStreamingTools.Models;
 using Nullinside.TwitchStreamingTools.Tts.TtsFilter;
 using Nullinside.TwitchStreamingTools.Utilities;
 
-using TwitchLib.Client.Events;
+using TwitchChatMessage = Nullinside.Api.Common.Twitch.Support.TwitchChatMessage;
 
 namespace Nullinside.TwitchStreamingTools.Tts;
 
@@ -36,7 +36,7 @@ public class TwitchChatTts : IDisposable, ITwitchChatTts {
   /// <summary>
   ///   The ordered list of chat messages to play.
   /// </summary>
-  private readonly BlockingCollection<Api.Common.Twitch.Support.TwitchChatMessage> _soundsToPlay;
+  private readonly BlockingCollection<TwitchChatMessage> _soundsToPlay;
 
   /// <summary>
   ///   The thread to play sounds on.
@@ -96,7 +96,7 @@ public class TwitchChatTts : IDisposable, ITwitchChatTts {
     _configuration = configuration;
     _twitchClient = twitchClient;
     ChatConfig = config;
-    _soundsToPlay = new BlockingCollection<Api.Common.Twitch.Support.TwitchChatMessage>();
+    _soundsToPlay = new BlockingCollection<TwitchChatMessage>();
     _soundThread = new Thread(PlaySoundsThread) {
       Name = "TwitchChatTts Thread",
       IsBackground = true
@@ -113,7 +113,7 @@ public class TwitchChatTts : IDisposable, ITwitchChatTts {
     }
 
     _poisonPill = true;
-    _soundsToPlay.Add(new Api.Common.Twitch.Support.TwitchChatMessage());
+    _soundsToPlay.Add(new TwitchChatMessage());
 
     lock (_ttsSoundOutputLock) {
       _ttsSoundOutputSignal?.Set();
@@ -195,7 +195,7 @@ public class TwitchChatTts : IDisposable, ITwitchChatTts {
     while (!_poisonPill) {
       try {
         // Loop through each chat message we've received from the twitch chat client.
-        foreach (Api.Common.Twitch.Support.TwitchChatMessage e in _soundsToPlay.GetConsumingEnumerable()) {
+        foreach (TwitchChatMessage e in _soundsToPlay.GetConsumingEnumerable()) {
           if (_poisonPill) {
             return;
           }
@@ -344,7 +344,7 @@ public class TwitchChatTts : IDisposable, ITwitchChatTts {
   /// </summary>
   /// <param name="chatEvent">The twitch chat event.</param>
   /// <returns>A tuple where Item1 is the login of the sender and Item2 is the message the user sent.</returns>
-  private Tuple<string, string> ConvertChatMessage(Api.Common.Twitch.Support.TwitchChatMessage chatEvent) {
+  private Tuple<string, string> ConvertChatMessage(TwitchChatMessage chatEvent) {
     var chatMessageInfo = new Tuple<string, string>(chatEvent.DisplayName, chatEvent.Message);
     foreach (ITtsFilter filter in _ttsFilters) {
       try {
@@ -363,11 +363,11 @@ public class TwitchChatTts : IDisposable, ITwitchChatTts {
   ///   Event called when a message is received in twitch chat.
   /// </summary>
   /// <param name="message">The chat message information.</param>
-  private void Client_OnMessageReceived(Api.Common.Twitch.Support.TwitchChatMessage message) {
+  private void Client_OnMessageReceived(TwitchChatMessage message) {
     LOG.Debug($"Adding: {message.Username} says {message.Message}");
     try {
       _soundsToPlay.Add(message);
-      TwitchChatLog.AddMessage(new TwitchChatMessage(message.Channel, message.Username, message.Message, message.Timestamp));
+      TwitchChatLog.AddMessage(new Models.TwitchChatMessage(message.Channel, message.Username, message.Message, message.Timestamp));
     }
     catch (Exception ex) {
       LOG.Error($"Failed to add {message.Username} says {message.Message}", ex);

@@ -2,8 +2,6 @@
 
 using Nullinside.Api.Common.Twitch.Support;
 
-using TwitchLib.Client.Events;
-
 namespace Nullinside.TwitchStreamingTools.Tts.TtsFilter;
 
 /// <summary>
