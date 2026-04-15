@@ -24,6 +24,16 @@ public class App : Application {
   private ILoggerFactory _loggerFactory;
 
   /// <summary>
+  /// Initializes a new instance of the <see cref="App"/> class.
+  /// </summary>
+  public App() {
+    _loggerFactory = LoggerFactory.Create(c => c
+        .AddConsole()
+      //    .SetMinimumLevel(LogLevel.Trace) // uncomment to view raw messages received from twitch
+    );
+  }
+
+  /// <summary>
   ///   Initializes the GUI.
   /// </summary>
   public override void Initialize() {
@@ -34,11 +44,6 @@ public class App : Application {
   ///   Launches the main application window.
   /// </summary>
   public override void OnFrameworkInitializationCompleted() {
-    _loggerFactory = LoggerFactory.Create(c => c
-        .AddConsole()
-      //    .SetMinimumLevel(LogLevel.Trace) // uncomment to view raw messages received from twitch
-    );
-
     TwitchClientProxy.Instance.TwitchOAuthToken = Configuration.Instance.OAuth?.AccessToken;
     TwitchClientProxy.Instance.TwitchUsername = Configuration.Instance.TwitchUsername;
     TwitchClientProxy.Instance.TwitchUsername = Configuration.Instance.TwitchUsername;
