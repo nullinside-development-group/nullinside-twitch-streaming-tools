@@ -5,8 +5,6 @@ using System.Linq;
 using Nullinside.Api.Common.Twitch.Support;
 using Nullinside.TwitchStreamingTools.Utilities;
 
-using TwitchLib.Client.Events;
-
 namespace Nullinside.TwitchStreamingTools.Tts.TtsFilter;
 
 /// <summary>
