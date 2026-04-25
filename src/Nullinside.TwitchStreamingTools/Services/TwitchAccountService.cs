@@ -121,13 +121,20 @@ public class TwitchAccountService : ITwitchAccountService {
       // Refresh the token
       await DoTokenRefreshIfNearExpiration().ConfigureAwait(false);
 
-      // Make sure the new token works
+      // Make sure the token works and get the user's login
       var twitchApi = new TwitchApiWrapper();
-      string? username = (await twitchApi.GetUser().ConfigureAwait(false))?.Login;
+      User? user = await twitchApi.GetUser().ConfigureAwait(false);
+      string? username = user?.Login;
 
       // Update the credentials
       CredentialsAreValid = !string.IsNullOrWhiteSpace(username);
       TwitchUsername = username;
+
+      if (CredentialsAreValid && null != twitchApi.OAuth) {
+        // Ensure the twitch client is using the latest credentials
+        _twitchClient.TwitchUsername = username;
+        _twitchClient.TwitchOAuthToken = twitchApi.OAuth.AccessToken;
+      }
     }
     catch (Exception ex) {
       LOG.Error("Error checking credentials", ex);
