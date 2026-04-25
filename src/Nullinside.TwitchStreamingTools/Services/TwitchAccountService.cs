@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using log4net;
 
 using Avalonia.Threading;
 
@@ -15,6 +16,11 @@ namespace Nullinside.TwitchStreamingTools.Services;
 ///   Manages the credentials in the application, ensuring credentials are kept up to date.
 /// </summary>
 public class TwitchAccountService : ITwitchAccountService {
+  /// <summary>
+  ///   The logger.
+  /// </summary>
+  private static readonly ILog LOG = LogManager.GetLogger(typeof(TwitchAccountService));
+
   /// <summary>
   ///   The application configuration.
   /// </summary>
@@ -123,10 +129,12 @@ public class TwitchAccountService : ITwitchAccountService {
       CredentialsAreValid = !string.IsNullOrWhiteSpace(username);
       TwitchUsername = username;
     }
-    catch {
-      if (credsWereValid) {
-        DeleteCredentials();
-      }
+    catch (Exception ex) {
+      LOG.Error("Error checking credentials", ex);
+      // Only delete credentials if they WERE valid and now we are sure they are definitely invalid.
+      // A simple exception might be a network error.
+      // If we want to be safe, we could check for specific exception types or just not delete here.
+      // Given the logs, it seems this might be too aggressive.
     }
     finally {
       // Fire off the event if something changed

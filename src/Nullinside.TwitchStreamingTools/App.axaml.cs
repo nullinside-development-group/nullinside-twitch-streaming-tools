@@ -44,16 +44,18 @@ public class App : Application {
   ///   Launches the main application window.
   /// </summary>
   public override void OnFrameworkInitializationCompleted() {
-    TwitchClientProxy.Instance.TwitchOAuthToken = Configuration.Instance.OAuth?.AccessToken;
-    TwitchClientProxy.Instance.TwitchUsername = Configuration.Instance.TwitchUsername;
-    TwitchClientProxy.Instance.TwitchUsername = Configuration.Instance.TwitchUsername;
-
     // Register all the services needed for the application to run
     var collection = new ServiceCollection();
+    collection.AddSingleton(_loggerFactory);
     collection.AddCommonServices();
 
     // Creates a ServiceProvider containing services from the provided IServiceCollection
     ServiceProvider services = collection.BuildServiceProvider();
+
+    var twitchClient = services.GetRequiredService<ITwitchClientProxy>();
+    twitchClient.TwitchOAuthToken = Configuration.Instance.OAuth?.AccessToken;
+    twitchClient.TwitchUsername = Configuration.Instance.TwitchUsername;
+
     services.StartupServices();
     var vm = services.GetRequiredService<MainWindowViewModel>();
     if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop) {
