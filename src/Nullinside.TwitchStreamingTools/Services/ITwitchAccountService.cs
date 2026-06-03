@@ -40,5 +40,5 @@ public interface ITwitchAccountService {
   /// <summary>
   ///   Clears out the credentials.
   /// </summary>
-  void DeleteCredentials();
+  Task DeleteCredentials();
 }

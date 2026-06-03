@@ -21,13 +21,15 @@
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
         <DocumentationFile>bin\Debug\TwitchStreamingTools.xml</DocumentationFile>
-        <NoWarn>CS0108</NoWarn>
+        <NoWarn>CS0108;ICU4N_IDE_0002</NoWarn>
+        <WarningsAsErrors>;NU1605;SYSLIB0011;SYSLIB0011</WarningsAsErrors>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
         <DocumentationFile>bin\Release\TwitchStreamingTools.xml</DocumentationFile>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-        <NoWarn>CS0108</NoWarn>
+        <NoWarn>CS0108;ICU4N_IDE_0002</NoWarn>
         <DebugType>none</DebugType>
+        <WarningsAsErrors>;NU1605;SYSLIB0011;SYSLIB0011</WarningsAsErrors>
     </PropertyGroup>
 
     <ItemGroup>

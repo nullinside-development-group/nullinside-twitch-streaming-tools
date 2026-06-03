@@ -96,9 +96,10 @@ public class TwitchAccountService : ITwitchAccountService {
   }
 
   /// <inheritdoc />
-  public void DeleteCredentials() {
+  public async Task DeleteCredentials() {
     _configuration.OAuth = null;
     _configuration.TwitchUsername = null;
+    await _twitchClient.DisconnectAsync().ConfigureAwait(false);
     _twitchClient.TwitchOAuthToken = null;
     _twitchClient.TwitchUsername = null;
     CredentialsAreValid = false;
@@ -119,29 +120,44 @@ public class TwitchAccountService : ITwitchAccountService {
 
     try {
       // Refresh the token
-      await DoTokenRefreshIfNearExpiration().ConfigureAwait(false);
+      bool refreshSuccessful = await DoTokenRefreshIfNearExpiration().ConfigureAwait(false);
+      if (!refreshSuccessful && null != _configuration.OAuth && _configuration.OAuth.ExpiresUtc < DateTime.UtcNow) {
+        LOG.Warn("Token refresh failed and token is expired. Invalidating credentials.");
+        CredentialsAreValid = false;
+        TwitchUsername = null;
+      }
+      else {
+        // Make sure the token works and get the user's login
+        var twitchApi = new TwitchApiWrapper();
+        User? user = await twitchApi.GetUser().ConfigureAwait(false);
+        string? username = user?.Login;
 
-      // Make sure the token works and get the user's login
-      var twitchApi = new TwitchApiWrapper();
-      User? user = await twitchApi.GetUser().ConfigureAwait(false);
-      string? username = user?.Login;
+        // Update the credentials
+        CredentialsAreValid = !string.IsNullOrWhiteSpace(username);
+        TwitchUsername = username;
 
-      // Update the credentials
-      CredentialsAreValid = !string.IsNullOrWhiteSpace(username);
-      TwitchUsername = username;
+        // Force the configuration to have the correct token in case we just logged in
+        if (null != twitchApi.OAuth) {
+          _configuration.OAuth = twitchApi.OAuth;
+        }
 
-      if (CredentialsAreValid && null != twitchApi.OAuth) {
-        // Ensure the twitch client is using the latest credentials
-        _twitchClient.TwitchUsername = username;
-        _twitchClient.TwitchOAuthToken = twitchApi.OAuth.AccessToken;
+        if (CredentialsAreValid && null != _configuration.OAuth) {
+          // Ensure the twitch client is using the latest credentials
+          _twitchClient.TwitchUsername = username;
+          _twitchClient.TwitchOAuthToken = _configuration.OAuth.AccessToken;
+        }
       }
     }
     catch (Exception ex) {
       LOG.Error("Error checking credentials", ex);
-      // Only delete credentials if they WERE valid and now we are sure they are definitely invalid.
-      // A simple exception might be a network error.
-      // If we want to be safe, we could check for specific exception types or just not delete here.
-      // Given the logs, it seems this might be too aggressive.
+      // If we get an error here, it might be a temporary network issue or it might be 
+      // that the credentials are no longer valid.
+      // If the token is already expired and we couldn't refresh or GetUser, 
+      // we should probably consider them invalid.
+      if (null != _configuration.OAuth && _configuration.OAuth.ExpiresUtc < DateTime.UtcNow) {
+        CredentialsAreValid = false;
+        TwitchUsername = null;
+      }
     }
     finally {
       // Fire off the event if something changed
@@ -156,23 +172,27 @@ public class TwitchAccountService : ITwitchAccountService {
   /// <summary>
   ///   Checks the expiration of the OAuth token and refreshes if it's within 1 hour of the time.
   /// </summary>
-  private async Task DoTokenRefreshIfNearExpiration() {
+  /// <returns>True if the token is valid (refreshed or not yet expiring), false if refresh failed.</returns>
+  private async Task<bool> DoTokenRefreshIfNearExpiration() {
     var twitchApi = new TwitchApiWrapper();
 
     // Don't wait until the token is expired, refresh it ~1 hour before it expires 
     DateTime expiration = twitchApi.OAuth?.ExpiresUtc ?? DateTime.MaxValue;
     TimeSpan timeUntil = expiration - (DateTime.UtcNow + TimeSpan.FromHours(1));
     if (timeUntil.Ticks >= 0) {
-      return;
+      return true;
     }
 
     if (null == twitchApi.OAuth || string.IsNullOrWhiteSpace(twitchApi.OAuth.AccessToken) ||
         string.IsNullOrWhiteSpace(twitchApi.OAuth.RefreshToken)) {
-      return;
+      return false;
     }
 
     // Refresh the token
-    await twitchApi.RefreshAccessToken().ConfigureAwait(false);
+    OAuthToken? newToken = await twitchApi.RefreshAccessToken().ConfigureAwait(false);
+    if (null == newToken) {
+      return false;
+    }
 
     // Update the configuration
     _configuration.OAuth = new OAuthToken {
@@ -181,5 +201,6 @@ public class TwitchAccountService : ITwitchAccountService {
       ExpiresUtc = twitchApi.OAuth.ExpiresUtc ?? DateTime.MinValue
     };
     _configuration.WriteConfiguration();
+    return true;
   }
 }
