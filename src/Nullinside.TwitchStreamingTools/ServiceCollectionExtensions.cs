@@ -23,7 +23,7 @@ public static class ServiceCollectionExtensions {
   public static void AddCommonServices(this IServiceCollection collection) {
     // Regular stuff
     collection.AddSingleton<IConfiguration, Configuration>(_ => Configuration.Instance);
-    collection.AddSingleton<ITwitchClientProxy, TwitchClientProxy>();
+    collection.AddSingleton<ITwitchClientProxy, CustomTwitchClientProxy>();
     collection.AddSingleton<ITwitchChatLog, TwitchChatLog>();
     collection.AddSingleton<IGlobalKeyPressService, GlobalKeyPressService>();
 

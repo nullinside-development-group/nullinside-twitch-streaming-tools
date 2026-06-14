@@ -99,7 +99,6 @@ public class TwitchAccountService : ITwitchAccountService {
   public async Task DeleteCredentials() {
     _configuration.OAuth = null;
     _configuration.TwitchUsername = null;
-    await _twitchClient.DisconnectAsync().ConfigureAwait(false);
     _twitchClient.TwitchOAuthToken = null;
     _twitchClient.TwitchUsername = null;
     CredentialsAreValid = false;
