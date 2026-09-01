@@ -92,7 +92,7 @@ public class GlobalSoundManager {
 
       try {
         using (var reader = new NAudioUtilities.AudioFileReader(sound.Filename))
-        using (var soundOutputEvent = new WaveOutEvent())
+        using (var soundOutputEvent = new WaveOut())
         using (var signal = new ManualResetEventSlim(false)) {
           soundOutputEvent.DeviceNumber = NAudioUtilities.GetOutputDeviceIndex(sound.OutputDevice);
           soundOutputEvent.Volume = sound.Volume / 100f;

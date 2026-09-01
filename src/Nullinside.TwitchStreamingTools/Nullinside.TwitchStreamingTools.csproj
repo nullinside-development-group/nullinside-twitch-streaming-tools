@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <OutputType>WinExe</OutputType>
-        <TargetFramework>net10.0</TargetFramework>
+        <TargetFramework>net10.0-windows</TargetFramework>
         <Nullable>enable</Nullable>
         <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
         <ApplicationManifest>app.manifest</ApplicationManifest>
@@ -65,13 +65,13 @@
         <PackageReference Include="Avalonia.ReactiveUI" Version="11.3.8"/>
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2"/>
         <PackageReference Include="DynamicData" Version="9.4.33" />
-        <PackageReference Include="log4net" Version="3.3.2" />
+        <PackageReference Include="log4net" Version="3.4.0" />
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.11" />
-        <PackageReference Include="NAudio.Wasapi" Version="2.3.0"/>
-        <PackageReference Include="NAudio.WinMM" Version="2.3.0"/>
+        <PackageReference Include="NAudio.Wasapi" Version="3.0.1" />
+        <PackageReference Include="NAudio.WinMM" Version="3.0.1" />
         <PackageReference Include="PInvoke.User32" Version="0.7.124"/>
         <PackageReference Include="System.Speech" Version="10.0.11" />
-        <PackageReference Include="Tmds.DBus.Protocol" Version="0.94.2" />
+        <PackageReference Include="Tmds.DBus.Protocol" Version="0.95.0" />
     </ItemGroup>
 
     <ItemGroup>
