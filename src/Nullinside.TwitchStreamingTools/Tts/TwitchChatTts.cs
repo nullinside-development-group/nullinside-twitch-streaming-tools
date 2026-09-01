@@ -81,7 +81,7 @@ public class TwitchChatTts : IDisposable, ITwitchChatTts {
   /// <summary>
   ///   The text-to-speech sound player.
   /// </summary>
-  private WaveOutEvent? _ttsSoundOutput;
+  private WaveOut? _ttsSoundOutput;
 
   /// <summary>
   ///   The signal used to make sound output synchronous.
@@ -286,7 +286,7 @@ public class TwitchChatTts : IDisposable, ITwitchChatTts {
         // Make sure we lock the objects used on multiple threads and play the file.
         lock (_ttsSoundOutputLock)
         lock (_ttsSoundOutputSignalLock) {
-          _ttsSoundOutput = new WaveOutEvent();
+          _ttsSoundOutput = new WaveOut();
           _ttsSoundOutputSignal = new ManualResetEvent(false);
 
           _ttsSoundOutput.DeviceNumber = NAudioUtilities.GetOutputDeviceIndex(ChatConfig?.OutputDevice);

@@ -19,11 +19,7 @@ public static class NAudioUtilities {
   /// <param name="index">Device to retrieve.</param>
   /// <returns>The input device capabilities.</returns>
   public static WaveInCapabilities GetInputDevice(int index) {
-    var caps = new WaveInCapabilities();
-    int structSize = Marshal.SizeOf(caps);
-    // ReSharper disable once RedundantCast
-    MmException.Try(WaveInterop.waveInGetDevCaps((IntPtr)index, out caps, structSize), "waveInGetDevCaps");
-    return caps;
+    return WaveIn.GetCapabilities(index);
   }
 
   /// <summary>
@@ -32,11 +28,7 @@ public static class NAudioUtilities {
   /// <param name="index">The index of the device.</param>
   /// <returns>The output device capabilities.</returns>
   public static WaveOutCapabilities GetOutputDevice(int index) {
-    var caps = new WaveOutCapabilities();
-    int structSize = Marshal.SizeOf(caps);
-    // ReSharper disable once RedundantCast
-    MmException.Try(WaveInterop.waveOutGetDevCaps((IntPtr)index, out caps, structSize), "waveOutGetDevCaps");
-    return caps;
+    return WaveOut.GetCapabilities(index);
   }
 
   /// <summary>
@@ -67,7 +59,7 @@ public static class NAudioUtilities {
   /// </summary>
   /// <returns>The number of devices.</returns>
   public static int GetTotalInputDevices() {
-    return WaveInterop.waveInGetNumDevs();
+    return WaveIn.DeviceCount;
   }
 
   /// <summary>
@@ -76,7 +68,7 @@ public static class NAudioUtilities {
   /// <remarks>Add two to the end to get all devices?</remarks>
   /// <returns>The total number of output devices.</returns>
   public static int GetTotalOutputDevices() {
-    return WaveInterop.waveOutGetNumDevs();
+    return WaveOut.DeviceCount;
   }
 
   /// <summary>
@@ -188,7 +180,18 @@ public static class NAudioUtilities {
     /// <returns>Number of samples read</returns>
     public int Read(float[] buffer, int offset, int count) {
       lock (_lockObject) {
-        return _sampleChannel.Read(buffer, offset, count);
+        return _sampleChannel.Read(buffer.AsSpan(offset, count));
+      }
+    }
+    
+    /// <summary>
+    ///   Reads audio from this sample provider
+    /// </summary>
+    /// <param name="buffer">Sample buffer</param>
+    /// <returns>Number of samples read</returns>
+    public int Read(Span<float> buffer) {
+      lock (_lockObject) {
+        return _sampleChannel.Read(buffer);
       }
     }
 
@@ -200,9 +203,11 @@ public static class NAudioUtilities {
     /// <param name="count">Number of bytes required</param>
     /// <returns>Number of bytes read</returns>
     public override int Read(byte[] buffer, int offset, int count) {
-      var waveBuffer = new WaveBuffer(buffer);
-      int samplesRequired = count / 4;
-      int samplesRead = Read(waveBuffer.FloatBuffer, offset / 4, samplesRequired);
+      Span<byte> byteSpan = buffer.AsSpan(offset, count);
+      Span<float> floatSpan = MemoryMarshal.Cast<byte, float>(byteSpan);
+
+      int samplesRead = Read(floatSpan);
+
       return samplesRead * 4;
     }
 
